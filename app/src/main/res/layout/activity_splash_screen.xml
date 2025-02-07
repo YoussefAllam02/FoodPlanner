@@ -15,19 +15,6 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:contentDescription="YumYum Logo"
-        android:src="@drawable/logo" />
+        android:src="@drawable/cook" />
 
-    <TextView
-        android:id="@+id/appTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="YumYum"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif"
-        android:letterSpacing="0.05"
-
-        />
 </LinearLayout>

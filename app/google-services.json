@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "629983990284",
+    "project_id": "yumyum-6e888",
+    "storage_bucket": "yumyum-6e888.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629983990284:android:1cc78ea85558515db75429",
+        "android_client_info": {
+          "package_name": "com.youssef.foodplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629983990284-h6jadskeqq6nsn7pk8asuchm5304gsie.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.youssef.foodplanner",
+            "certificate_hash": "d22060d8d97d03188fd10d8a27e67ba0ebd589d5"
+          }
+        },
+        {
+          "client_id": "629983990284-q1nemdcea0d6uv54uvv4masftfp3akfh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZKoS2IRF0qpCDp2ZYKj7wos_gC24-bp0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629983990284-q1nemdcea0d6uv54uvv4masftfp3akfh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

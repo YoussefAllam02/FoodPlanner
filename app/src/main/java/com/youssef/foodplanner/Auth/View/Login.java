@@ -1,4 +1,4 @@
-package com.youssef.foodplanner;
+package com.youssef.foodplanner.Auth.View;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.youssef.foodplanner.R;
 
 public class Login extends Fragment {
   private EditText email, password;

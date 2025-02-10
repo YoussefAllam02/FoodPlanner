@@ -1,5 +1,6 @@
 package com.youssef.foodplanner.Auth.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.youssef.foodplanner.MainActivity;
 import com.youssef.foodplanner.R;
 
 public class Login extends Fragment {
@@ -50,14 +54,16 @@ public class Login extends Fragment {
     signupText = view.findViewById(R.id.sign_up_link);
 
     signinButton.setOnClickListener(v -> loginUser());
+    signupText.setOnClickListener(v -> {
+
+      NavController navController = Navigation.findNavController(view);
+      navController.navigate(R.id.action_login_to_signup);
+    });
   }
 
   private void loginUser() {
     String userEmail = email.getText().toString().trim();
     String userPassword = password.getText().toString().trim();
-
-    Log.d("Login", "Email: " + userEmail);
-    Log.d("Login", "Password: " + userPassword);
 
     if (userEmail.isEmpty() || userPassword.isEmpty()) {
       Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -66,13 +72,13 @@ public class Login extends Fragment {
 
     auth.signInWithEmailAndPassword(userEmail, userPassword)
             .addOnSuccessListener(authResult -> {
-              FirebaseUser user = auth.getCurrentUser();
               Toast.makeText(getContext(), "Login successful", Toast.LENGTH_SHORT).show();
-              Log.d("Login", "User logged in: " + user.getEmail());
+
+              // Navigate to homeFragment
+              NavController navController = Navigation.findNavController(requireView());
+              navController.navigate(R.id.action_login_to_home);
             })
             .addOnFailureListener(e -> {
               Toast.makeText(getContext(), "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-              Log.e("Login", "Error: " + e.getMessage());
             });
-  }
-}
+  }}

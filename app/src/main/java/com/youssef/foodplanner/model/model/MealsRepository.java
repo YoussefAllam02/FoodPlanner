@@ -12,5 +12,5 @@ void insertMeals(List<Meal> meals);
 void deleteAllMeals();
 void addtoMealPlan(Meal meal);
 void addtoFavourite(Meal meal);
-LiveData<List<Meal>> getAllMeals();>
+LiveData<List<Meal>> getAllMeals();
 }

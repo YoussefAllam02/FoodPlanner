@@ -1,5 +1,6 @@
 package com.youssef.foodplanner.Auth.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +13,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.youssef.foodplanner.MainActivity;
 import com.youssef.foodplanner.R;
 
-class Signup extends Fragment {
+public class Signup extends Fragment {
     private EditText email, name, password, confirmpassword;
     private Button signupButton;
     private FirebaseAuth auth;
@@ -49,19 +53,13 @@ class Signup extends Fragment {
         confirmpassword = view.findViewById(R.id.confirmPasswordSignupField);
         signupButton = view.findViewById(R.id.signup_button);
 
-        signupButton.setOnClickListener(v -> registerUser());
+        signupButton.setOnClickListener(v -> registerUser()); // No need to pass view here
     }
-
     private void registerUser() {
         String userEmail = email.getText().toString().trim();
         String userName = name.getText().toString().trim();
         String userPassword = password.getText().toString().trim();
         String userConfirmPassword = confirmpassword.getText().toString().trim();
-
-        Log.d("Signup", "Email: " + userEmail);
-        Log.d("Signup", "Name: " + userName);
-        Log.d("Signup", "Password: " + userPassword);
-        Log.d("Signup", "Confirm Password: " + userConfirmPassword);
 
         if (userEmail.isEmpty() || userName.isEmpty() || userPassword.isEmpty() || userConfirmPassword.isEmpty()) {
             Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -75,16 +73,15 @@ class Signup extends Fragment {
 
         auth.createUserWithEmailAndPassword(userEmail, userPassword)
                 .addOnSuccessListener(authResult -> {
-                    FirebaseUser user = auth.getCurrentUser();
                     Toast.makeText(getContext(), "Signup successful", Toast.LENGTH_SHORT).show();
-                    Log.d("Signup", "User created: " + user.getEmail());
+
+                    // Navigate to homeFragment
+                    NavController navController = Navigation.findNavController(requireView());
+                    navController.navigate(R.id.action_signup_to_home);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Signup failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("Signup", "Error: " + e.getMessage());
                 });
     }
-    public  void logout(){
-        auth.signOut();
-    }
+
 }

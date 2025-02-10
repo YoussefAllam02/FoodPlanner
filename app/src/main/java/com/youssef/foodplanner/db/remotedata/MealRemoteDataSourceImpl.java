@@ -1,9 +1,9 @@
 package com.youssef.foodplanner.db.remotedata;
 
-import android.net.ConnectivityManager;
 import android.util.Log;
 
 import com.youssef.foodplanner.model.model.MealResponse;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -12,23 +12,27 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
-    private static Retrofit retrofit = null;
+    private static MealRemoteDataSourceImpl instance = null;
     private ApiService service;
 
-    // Constructor
-    public MealRemoteDataSourceImpl() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+    // Singleton Pattern
+    public static MealRemoteDataSourceImpl getInstance() {
+        if (instance == null) {
+            instance = new MealRemoteDataSourceImpl();
         }
+        return instance;
+    }
+
+    private MealRemoteDataSourceImpl() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
         service = retrofit.create(ApiService.class);
     }
 
-
-    public void makeNetworkCall(ConnectivityManager.NetworkCallback callback) {
-        Call<com.youssef.foodplanner.model.model.MealResponse> call = service.getMeals(); // Ensure `getMeals()` is defined in ApiService
+    public void makeNetworkCall(NetworkCallBack callback) {
+        Call<MealResponse> call = service.getMeals();
         call.enqueue(new Callback<MealResponse>() {
             @Override
             public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {

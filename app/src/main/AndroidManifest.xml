@@ -8,11 +8,12 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-
         android:supportsRtl="false"
         android:theme="@style/Theme.FoodPlanner"
         tools:targetApi="31">
-
+        <activity
+            android:name=".Auth.View.Auth"
+            android:exported="false" />
         <!-- Splash Activity (First Screen) -->
         <activity
             android:name=".SplashActivity"
@@ -20,16 +21,13 @@
             android:theme="@style/Theme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Main Activity (After Splash) -->
+        </activity> <!-- Main Activity (After Splash) -->
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-        </activity>
-
+            android:exported="true"></activity>
     </application>
 
 </manifest>

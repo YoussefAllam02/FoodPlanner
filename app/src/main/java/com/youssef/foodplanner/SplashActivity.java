@@ -5,29 +5,29 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.youssef.foodplanner.Auth.View.AuthActivity;
 
+public class SplashActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash_screen);
 
-
-    public class SplashActivity extends AppCompatActivity {
-        @Override
-        protected void onCreate(@Nullable Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            EdgeToEdge.enable(this);
-            setContentView(R.layout.activity_splash_screen);
-
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    finish();
-                }
-            }, 3000);
-        }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                // User is logged in -> Go to MainActivity
+                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            } else {
+                // User is not logged in -> Go to AuthActivity (Login/Signup)
+                startActivity(new Intent(SplashActivity.this, AuthActivity.class));
+            }
+            finish();
+        }, 3000);
     }
+}

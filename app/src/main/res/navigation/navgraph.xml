@@ -1,38 +1,45 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/auth_navigation"
-    app:startDestination="@id/loginFragment">
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.youssef.foodplanner.Auth.View.Login"
-        android:label="Login"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_signupFragment"
-            app:destination="@id/signupFragment" />
+    app:startDestination="@id/homeFragment">
 
-        <!-- Action to navigate to MainActivity -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.youssef.foodplanner.allmeals.view.home"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_loginFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_homeFragment_to_favourite"
+            app:destination="@id/favourite" />
+        <action
+            android:id="@+id/action_homeFragment_to_favourite2"
+            app:destination="@id/favourite" />
+        <action
+            android:id="@+id/action_homeFragment_to_favourite3"
+            app:destination="@id/favourite" />
+        <action
+            android:id="@+id/action_homeFragment_to_favourite4"
+            app:destination="@id/favourite" />
+        <action
+            android:id="@+id/action_homeFragment_to_favourite5"
+            app:destination="@id/favourite" />
+        <action
+            android:id="@+id/action_homeFragment_to_favourite6"
+            app:destination="@id/favourite" />
+        <action
+            android:id="@+id/action_homeFragment_to_favourite7"
+            app:destination="@id/favourite" />
+        <action
+            android:id="@+id/action_homeFragment_to_favourite8"
+            app:destination="@id/favourite" />
     </fragment>
     <fragment
-        android:id="@+id/signupFragment"
-        android:name="com.youssef.foodplanner.signup"
-        android:label="Sign Up"
-        tools:layout="@layout/fragment_signup">
-
-        <!-- Action to navigate to LoginFragment -->
+        android:id="@+id/favourite"
+        android:name="com.youssef.foodplanner.FavMealPage.view.favourite"
+        android:label="fragment_favourite"
+        tools:layout="@layout/fragment_favourite" >
         <action
-            android:id="@+id/action_signupFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_signupFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_favourite_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.youssef.foodplanner.MainActivity"
-        android:label="MainActivity" />
 </navigation>

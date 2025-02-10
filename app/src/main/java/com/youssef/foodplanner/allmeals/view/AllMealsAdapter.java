@@ -15,20 +15,22 @@ import java.util.List;
 public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealViewHolder> {
 
     private List<Meal> meals;
+    private OnMealClickListener onMealClickListener;
 
-    public AllMealsAdapter() {
-        // Default constructor
+    public AllMealsAdapter(OnMealClickListener onMealClickListener) {
+        this.onMealClickListener = onMealClickListener;
     }
 
     public void setMeals(List<Meal> meals) {
         this.meals = meals;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public MealViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_meals, parent, false);
-        return new MealViewHolder(view);
+        return new MealViewHolder(view, onMealClickListener);
     }
 
     @Override
@@ -46,15 +48,29 @@ public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealVi
         return meals == null ? 0 : meals.size();
     }
 
-    public static class MealViewHolder extends RecyclerView.ViewHolder {
+    public static class MealViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mealName, mealCategory;
         ImageView mealImage;
+        OnMealClickListener onMealClickListener;
 
-        public MealViewHolder(@NonNull View itemView) {
+        public MealViewHolder(@NonNull View itemView, OnMealClickListener onMealClickListener) {
             super(itemView);
+            this.onMealClickListener = onMealClickListener;
             mealName = itemView.findViewById(R.id.meal_name);
             mealCategory = itemView.findViewById(R.id.meal_category);
             mealImage = itemView.findViewById(R.id.meal_image);
+
+            // Set click listener
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            onMealClickListener.onMealClick(getAdapterPosition());
+        }
+    }
+
+    public interface OnMealClickListener {
+        void onMealClick(int position);
     }
 }

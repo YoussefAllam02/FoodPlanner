@@ -5,8 +5,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "meals")
-public class Meal {
+public class Meal implements Serializable {
 
     @PrimaryKey
     @NonNull
@@ -31,16 +33,19 @@ public class Meal {
     @ColumnInfo(name = "tags")
     private String mealTags;
 
+    @ColumnInfo(name = "youtube_url")
+    private String strYoutube; // New field for YouTube video URL
 
-    public Meal(String idMeal, String mealName, String Category, String mealArea,
-                String strInstructions, String mealImage, String mealTags) {
+    public Meal(String idMeal, String mealName, String category, String mealArea,
+                String instructions, String mealImage, String mealTags, String strYoutube) {
         this.idMeal = idMeal;
         this.mealName = mealName;
-        this.category = Category;
+        this.category = category;
         this.mealArea = mealArea;
-        this.instructions = strInstructions;
+        this.instructions = instructions;
         this.mealImage = mealImage;
         this.mealTags = mealTags;
+        this.strYoutube = strYoutube;
     }
 
     // Default constructor
@@ -75,6 +80,10 @@ public class Meal {
         return mealTags;
     }
 
+    public String getStrYoutube() {
+        return strYoutube;
+    } // Getter for YouTube URL
+
     // Setter methods
     public void setIdMeal(String idMeal) {
         this.idMeal = idMeal;
@@ -103,4 +112,8 @@ public class Meal {
     public void setMealTags(String mealTags) {
         this.mealTags = mealTags;
     }
+
+    public void setStrYoutube(String strYoutube) {
+        this.strYoutube = strYoutube;
+    } // Setter for YouTube URL
 }

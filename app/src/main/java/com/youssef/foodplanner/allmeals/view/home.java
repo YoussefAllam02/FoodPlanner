@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -11,19 +12,23 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.youssef.foodplanner.R;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
 import com.youssef.foodplanner.db.remotedata.NetworkCallBack;
 import com.youssef.foodplanner.model.model.Meal;
 import com.youssef.foodplanner.model.model.MealResponse;
+
 import java.util.List;
 
-public class home extends Fragment {
+
+public class home extends Fragment implements AllMealsAdapter.OnMealClickListener {
 
     private NavController navController;
     private RecyclerView popularMealsRecyclerView;
     private AllMealsAdapter popularMealsAdapter;
     private View loadingGif;
+    private List<Meal> meals;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +37,6 @@ public class home extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -40,48 +44,46 @@ public class home extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         navController = Navigation.findNavController(view);
         popularMealsRecyclerView = view.findViewById(R.id.rec_view_meals_popular);
         loadingGif = view.findViewById(R.id.loading_gif);
 
-
         popularMealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        popularMealsAdapter = new AllMealsAdapter();
+        popularMealsAdapter = new AllMealsAdapter(this);
         popularMealsRecyclerView.setAdapter(popularMealsAdapter);
-
 
         view.findViewById(R.id.favourite).setOnClickListener(v -> {
             navController.navigate(R.id.action_homeFragment_to_favourite);
         });
 
-
         fetchPopularMeals();
     }
 
     private void fetchPopularMeals() {
-        // Show loading GIF
         loadingGif.setVisibility(View.VISIBLE);
 
         MealRemoteDataSourceImpl.getInstance().makeNetworkCall(new NetworkCallBack() {
             @Override
             public void onSuccess(MealResponse response) {
-
                 loadingGif.setVisibility(View.GONE);
-
-
-                List<Meal> meals = response.getMeals();
+                meals = response.getMeals();
                 popularMealsAdapter.setMeals(meals);
-                popularMealsAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(String error) {
-
                 loadingGif.setVisibility(View.GONE);
-
-
+                // Handle error
             }
         });
+    }
+
+    @Override
+    public void onMealClick(int position) {
+
+        Meal meal = meals.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("meal", meal);
+        navController.navigate(R.id.action_homeFragment_to_detailedMeal, bundle);
     }
 }

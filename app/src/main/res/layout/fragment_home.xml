@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".allmeals.view.home"
+    tools:context=".allmeals.view.HomeFragment"
     android:id="@+id/root_home">
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/loading_gif"
@@ -62,6 +62,7 @@
                         android:layout_gravity="bottom|center"
                         android:layout_marginStart="230dp"
                         android:scaleType="centerCrop"
+                        android:layout_marginTop="20dp"
                         android:src="@drawable/ic_baseline_search_24" />
                 </LinearLayout>
 

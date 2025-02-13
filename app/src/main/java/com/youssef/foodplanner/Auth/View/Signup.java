@@ -76,8 +76,9 @@ public class Signup extends Fragment {
                     Toast.makeText(getContext(), "Signup successful", Toast.LENGTH_SHORT).show();
 
                     // Navigate to homeFragment
-                    NavController navController = Navigation.findNavController(requireView());
+                    NavController navController = Navigation.findNavController(getView());
                     navController.navigate(R.id.action_signup_to_home);
+
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Signup failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();

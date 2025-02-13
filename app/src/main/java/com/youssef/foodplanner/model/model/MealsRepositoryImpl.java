@@ -1,45 +1,58 @@
 package com.youssef.foodplanner.model.model;
 
 import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
-import com.youssef.foodplanner.db.localdata.MealLocalDataSourceImpl;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSource;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
-import com.youssef.foodplanner.db.remotedata.NetworkCallBack;
 
 import java.util.List;
 
-public class MealsRepositoryImpl {
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
-    MealRemoteDataSourceImpl remoteDataSource;
-    MealLocalDataSourceImpl localDataSource;
-    private static MealsRepositoryImpl repo=null;
+public class MealsRepositoryImpl implements MealsRepository {
 
-    public static MealsRepositoryImpl getInstance(
-            MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource) {
+    private final MealRemoteDataSource remoteDataSource;
+    private final MealLocalDataSource localDataSource;
+    private static MealsRepositoryImpl repo = null;
+
+    // Singleton Pattern
+    public static MealsRepositoryImpl getInstance(MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource) {
         if (repo == null) {
             repo = new MealsRepositoryImpl(remoteDataSource, localDataSource);
         }
         return repo;
     }
-    private MealsRepositoryImpl(MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource) {
-                this.remoteDataSource = remoteDataSource;
-                this.localDataSource = localDataSource;
-    }
-    public void getAllMeals(NetworkCallBack callBack){
-        remoteDataSource.makeNetworkCall(callBack);
-    }
-    public void insertMeals(List<Meal> meals){
-        localDataSource.insertMeals(meals);
-        }
-    public void deleteAllMeals(){
-        localDataSource.delete AllMeals();
-    }
-    public void addtoMealPlan(Meal meal){
+
+    public MealsRepositoryImpl(MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource) {
+        this.remoteDataSource = remoteDataSource;
+        this.localDataSource = localDataSource;
     }
 
-    public  static liveData<List<Meal>> getAllMeals(){
-        return localDataSource.getAllMeals();
-    }
+    @Override
+    public Observable<List<Meal>> getAllMeals() {
+        return remoteDataSource.makeNetworkCall()
+                .map(MealResponse::getMeals) // Extracting list of meals from response
+                .subscribeOn(Schedulers.io()); // Running on background thread
     }
 
+    @Override
+    public Completable insertMeals(Meal meals) {
+        return localDataSource.insertMeals(meals);
+    }
 
+    @Override
+    public Completable deleteAllMeals() {
+        return localDataSource.deleteAllMeals();
+    }
+
+    @Override
+    public Completable addtoMealPlan(Meal meal) {
+        return localDataSource.insertMeals(meal);
+    }
+
+    @Override
+    public Completable addtoFavourite(Meal meal) {
+        return localDataSource.insertMeals(meal);
+    }
+}

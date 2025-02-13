@@ -7,6 +7,8 @@
     <style name="Theme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splashbackground</item>
     </style>
-    <style name="CustomToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="CustomToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="Theme.FoodPlanner" parent="Base.Theme.FoodPlanner" />
 </resources>

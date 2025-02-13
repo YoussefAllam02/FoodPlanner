@@ -1,6 +1,10 @@
 package com.youssef.foodplanner.db.remotedata;
 
+import com.youssef.foodplanner.model.model.MealResponse;
+
+import io.reactivex.rxjava3.core.Observable;
+
 public interface MealRemoteDataSource {
-void makeNetworkCall(NetworkCallBack callback);
+    Observable<MealResponse> makeNetworkCall();
 
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,15 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.youssef.foodplanner.R;
-import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
-import com.youssef.foodplanner.db.remotedata.NetworkCallBack;
 import com.youssef.foodplanner.model.model.Meal;
-import com.youssef.foodplanner.model.model.MealResponse;
 
 import java.util.List;
 
-
-public class home extends Fragment implements AllMealsAdapter.OnMealClickListener {
+public class HomeFragment extends Fragment implements OnMealListener {
 
     private NavController navController;
     private RecyclerView popularMealsRecyclerView;
@@ -44,46 +41,41 @@ public class home extends Fragment implements AllMealsAdapter.OnMealClickListene
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Initialize NavController
         navController = Navigation.findNavController(view);
+
+        // Initialize RecyclerView and Adapter
         popularMealsRecyclerView = view.findViewById(R.id.rec_view_meals_popular);
         loadingGif = view.findViewById(R.id.loading_gif);
 
         popularMealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        popularMealsAdapter = new AllMealsAdapter(this);
+        popularMealsAdapter = new AllMealsAdapter(requireContext(), meals, this); // Pass 'this' as the OnMealListener
         popularMealsRecyclerView.setAdapter(popularMealsAdapter);
 
-        view.findViewById(R.id.favourite).setOnClickListener(v -> {
-            navController.navigate(R.id.action_homeFragment_to_favourite);
-        });
 
-        fetchPopularMeals();
+
+
+
     }
 
-    private void fetchPopularMeals() {
-        loadingGif.setVisibility(View.VISIBLE);
-
-        MealRemoteDataSourceImpl.getInstance().makeNetworkCall(new NetworkCallBack() {
-            @Override
-            public void onSuccess(MealResponse response) {
-                loadingGif.setVisibility(View.GONE);
-                meals = response.getMeals();
-                popularMealsAdapter.setMeals(meals);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                loadingGif.setVisibility(View.GONE);
-                // Handle error
-            }
-        });
+    public void displayMeals(List<Meal> meals) {
+        this.meals = meals; // Set the meals data
+        if (popularMealsAdapter != null) {
+            popularMealsAdapter.setMeals(meals); // Notify adapter to refresh the RecyclerView
+        }
+        if (loadingGif != null) {
+            loadingGif.setVisibility(View.GONE); // Hide loading gif once data is loaded
+        }
     }
 
     @Override
-    public void onMealClick(int position) {
+    public void onFavProductClick(Meal meal) {
+        // Handle favorite product click
+        Toast.makeText(requireContext(), "Added to favorites: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
 
-        Meal meal = meals.get(position);
+        // Navigate to the DetailedMealFragment
         Bundle bundle = new Bundle();
         bundle.putSerializable("meal", meal);
-        navController.navigate(R.id.action_homeFragment_to_detailedMeal, bundle);
+        navController.navigate(R.id.action_home_to_detailedMeal, bundle); // Use the correct action ID
     }
 }

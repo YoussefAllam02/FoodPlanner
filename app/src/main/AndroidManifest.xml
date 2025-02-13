@@ -11,23 +11,28 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.FoodPlanner"
         tools:targetApi="31">
-        <activity
-            android:name=".Auth.View.Auth"
-            android:exported="false" />
-        <!-- Splash Activity (First Screen) -->
+
+        <!-- Splash Screen Activity (First Screen) -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Main Activity (After Splash) -->
+        </activity>
+
+        <!-- Main Activity (Hosts the Main Navigation Graph) -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
+
+        <!-- Auth Activity (Hosts the Auth Navigation Graph) -->
+        <activity
+            android:name=".Auth.View.AuthActivity"
+            android:exported="true" />
+
     </application>
 
 </manifest>

@@ -73,12 +73,15 @@ public class Login extends Fragment {
     auth.signInWithEmailAndPassword(userEmail, userPassword)
             .addOnSuccessListener(authResult -> {
               Toast.makeText(getContext(), "Login successful", Toast.LENGTH_SHORT).show();
-
-              // Navigate to homeFragment
-              NavController navController = Navigation.findNavController(requireView());
+              NavController navController = Navigation.findNavController(getView());
               navController.navigate(R.id.action_login_to_home);
+
             })
             .addOnFailureListener(e -> {
               Toast.makeText(getContext(), "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
+    signupText.setOnClickListener(v -> {
+      NavController navController = Navigation.findNavController(v);
+      navController.navigate(R.id.action_login_to_signup);
+    });
   }}

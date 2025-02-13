@@ -36,8 +36,11 @@ public class Meal implements Serializable {
     @ColumnInfo(name = "youtube_url")
     private String strYoutube; // New field for YouTube video URL
 
+    @ColumnInfo(name = "is_favorite")
+    private boolean isFavorite; // New field to mark the meal as a favorite
+
     public Meal(String idMeal, String mealName, String category, String mealArea,
-                String instructions, String mealImage, String mealTags, String strYoutube) {
+                String instructions, String mealImage, String mealTags, String strYoutube, boolean isFavorite) {
         this.idMeal = idMeal;
         this.mealName = mealName;
         this.category = category;
@@ -46,6 +49,7 @@ public class Meal implements Serializable {
         this.mealImage = mealImage;
         this.mealTags = mealTags;
         this.strYoutube = strYoutube;
+        this.isFavorite = isFavorite; // Initialize the favorite flag
     }
 
     // Default constructor
@@ -82,7 +86,11 @@ public class Meal implements Serializable {
 
     public String getStrYoutube() {
         return strYoutube;
-    } // Getter for YouTube URL
+    }
+
+    public boolean isFavorite() {
+        return isFavorite; // Getter for the favorite flag
+    }
 
     // Setter methods
     public void setIdMeal(String idMeal) {
@@ -115,5 +123,9 @@ public class Meal implements Serializable {
 
     public void setStrYoutube(String strYoutube) {
         this.strYoutube = strYoutube;
-    } // Setter for YouTube URL
+    }
+
+    public void setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite; // Setter for the favorite flag
+    }
 }

@@ -26,7 +26,7 @@ public class MealLocalDataSourceImpl implements MealLocalDataSource {
         return localDataSource;
     }
 
-    @Override
+
     public Observable<List<Meal>> getAllMeals() {
         return mealDao.getAllMeals(); // ✅ Now returns Observable instead of LiveData
     }
@@ -39,5 +39,15 @@ public class MealLocalDataSourceImpl implements MealLocalDataSource {
     @Override
     public Completable deleteAllMeals() {
         return Completable.fromRunnable(() -> mealDao.deleteAllMeals()); // ✅ Uses Completable for deletion
+    }
+
+    @Override
+    public Completable insertMealToPlan(Meal meal) {
+        return null;
+    }
+
+    @Override
+    public Completable insertMealToFavorites(Meal meal) {
+        return null;
     }
 }

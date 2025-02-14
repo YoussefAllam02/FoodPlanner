@@ -66,11 +66,21 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
     }
 
     @Override
+    public void showSuccessMessage(String message) {
+
+    }
+
+    @Override
     public void onFavProductClick(Meal meal) {
         // Handle favorite product click
         Toast.makeText(this, "Added to favorites: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
 
         // Delegate the action to the presenter
         presenter.addToFav(meal); // Add to favorites
+    }
+
+    @Override
+    public void onMealItemClick(Meal meal) {
+
     }
 }

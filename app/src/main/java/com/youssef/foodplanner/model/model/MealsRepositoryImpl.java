@@ -1,14 +1,15 @@
 package com.youssef.foodplanner.model.model;
 
+import android.util.Log;
+
 import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSource;
-import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
-
-import java.util.List;
-
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MealsRepositoryImpl implements MealsRepository {
 
@@ -16,29 +17,42 @@ public class MealsRepositoryImpl implements MealsRepository {
     private final MealLocalDataSource localDataSource;
     private static MealsRepositoryImpl repo = null;
 
-    // Singleton Pattern
-    public static MealsRepositoryImpl getInstance(MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource) {
+    public static MealsRepositoryImpl getInstance(MealRemoteDataSource remoteDataSource,
+                                                  MealLocalDataSource localDataSource) {
         if (repo == null) {
             repo = new MealsRepositoryImpl(remoteDataSource, localDataSource);
         }
         return repo;
     }
 
-    public MealsRepositoryImpl(MealRemoteDataSource remoteDataSource, MealLocalDataSource localDataSource) {
+    public MealsRepositoryImpl(MealRemoteDataSource remoteDataSource,
+                               MealLocalDataSource localDataSource) {
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
     }
 
+
     @Override
     public Observable<List<Meal>> getAllMeals() {
-        return remoteDataSource.makeNetworkCall()
-                .map(MealResponse::getMeals) // Extracting list of meals from response
-                .subscribeOn(Schedulers.io()); // Running on background thread
+        return remoteDataSource.getAllMeals()
+                .map(MealResponse::getMeals)
+                .onErrorReturn(throwable -> {
+                    Log.e("MealsRepositoryImpl", "Error fetching meals", throwable);
+                    return new ArrayList<>(); // Return an empty list in case of error
+                })
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Completable insertMeals(Meal meals) {
-        return localDataSource.insertMeals(meals);
+    public Observable<List<Meal>> getMealsByIngredient(String ingredient) {
+        return remoteDataSource.getMealsByIngredient(ingredient)
+                .map(MealResponse::getMeals)
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Completable insertMeals(Meal meal) {
+        return localDataSource.insertMeals(meal);
     }
 
     @Override
@@ -47,12 +61,12 @@ public class MealsRepositoryImpl implements MealsRepository {
     }
 
     @Override
-    public Completable addtoMealPlan(Meal meal) {
-        return localDataSource.insertMeals(meal);
+    public Completable addToMealPlan(Meal meal) {
+        return localDataSource.insertMealToPlan(meal);
     }
 
     @Override
-    public Completable addtoFavourite(Meal meal) {
-        return localDataSource.insertMeals(meal);
+    public Completable addToFavourite(Meal meal) {
+        return localDataSource.insertMealToFavorites(meal);
     }
 }

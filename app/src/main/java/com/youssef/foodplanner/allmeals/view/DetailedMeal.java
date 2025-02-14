@@ -45,7 +45,7 @@ public class DetailedMeal extends Fragment {
         }
 
         // Initialize API service
-        apiService = MealRemoteDataSourceImpl.getInstance().create(ApiService.class);
+       apiService= (ApiService) new MealRemoteDataSourceImpl();
     }
 
     @Override
@@ -78,42 +78,18 @@ public class DetailedMeal extends Fragment {
 
         // Set meal name, category, and area
         tvMealName.setText(meal.getMealName());
-        tvCategoryInfo.setText(getString(R.string.category_format, meal.getCategory()));
-        tvAreaInfo.setText(getString(R.string.area_format, meal.getMealArea()));
+        //tvCategoryInfo.setText(getString(R.string.tv_categoryInfo, meal.getCategory()));
+        //tvAreaInfo.setText(getString(R.string.tv_areaInfo, meal.getMealArea()));
 
         tvCategoryInfo.setVisibility(View.VISIBLE);
         tvAreaInfo.setVisibility(View.VISIBLE);
     }
 
     private void fetchMealDetails(String mealId) {
-        apiService.getMealDetail(mealId)
+        apiService.getMealDetails(Integer.parseInt(mealId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<MealResponse>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(@NonNull MealResponse mealResponse) {
-                        if (mealResponse.getMeals() != null && !mealResponse.getMeals().isEmpty()) {
-                            Meal detailedMeal = mealResponse.getMeals().get(0);
-
-                            tvInstructions.setText(detailedMeal.getInstructions());
-
-
-                            loadYoutubeVideo(detailedMeal.getStrYoutube());
-                        } else {
-                            Toast.makeText(requireContext(), "No detailed meal data found!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        Toast.makeText(requireContext(), "Failed to fetch meal details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .subscribe();
     }
 
     private void loadYoutubeVideo(String youtubeUrl) {

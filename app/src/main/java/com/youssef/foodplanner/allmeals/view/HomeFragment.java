@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment implements AllMealsView, OnMealListen
 
         navController = Navigation.findNavController(view);
 
-        // Find RecyclerViews from layout
+
         popularMealsRecyclerView = view.findViewById(R.id.rec_view_meals_popular);
         randomMealsRecyclerView = view.findViewById(R.id.rv_random_meals);
         loadingGif = view.findViewById(R.id.loading_gif);
@@ -74,7 +74,6 @@ public class HomeFragment extends Fragment implements AllMealsView, OnMealListen
         randomMealsRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // Trigger presenter to load meals
         presenter.getMeals();
     }
 
@@ -89,30 +88,42 @@ public class HomeFragment extends Fragment implements AllMealsView, OnMealListen
         navController.navigate(R.id.action_home_to_favourite, bundle);
     }
 
+
     @Override
     public void showAllProducts(List<Meal> meals) {
-        // Setup adapter for popular meals
+        // Setup adapter for popular meals (vertical RecyclerView)
         popularMealsAdapter = new AllMealsAdapter(requireContext(), meals, this);
         popularMealsRecyclerView.setAdapter(popularMealsAdapter);
 
         // For random meals, pick a subset (e.g., first 5 items)
         List<Meal> randomMeals = meals.subList(0, Math.min(5, meals.size()));
-        randomMealAdapter = new MealAdapter(requireContext(), randomMeals, meal -> {
-            Toast.makeText(requireContext(), "Random meal clicked: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
-        });
-        randomMealsRecyclerView.setAdapter(randomMealAdapter);
+        randomMealAdapter = new MealAdapter(requireContext(), randomMeals, new OnMealListener() {
+            @Override
+            public void onFavProductClick(Meal meal) {
+                // Handle favorite click if needed
+            }
 
-        if (loadingGif != null) {
-            loadingGif.setVisibility(View.GONE);
-        }
+            @Override
+            public void onMealItemClick(Meal meal) {
+                Toast.makeText(requireContext(), "Random meal clicked: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set the adapter for the horizontal RecyclerView
+        randomMealsRecyclerView.setAdapter(randomMealAdapter);
 
         Log.d("HomeFragment", "Loaded " + meals.size() + " meals.");
     }
-
     @Override
     public void showErrorMessage(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void showSuccessMessage(String message) {
+
+    }
+
     @Override
     public void onMealItemClick(Meal meal) {
         Bundle bundle = new Bundle();

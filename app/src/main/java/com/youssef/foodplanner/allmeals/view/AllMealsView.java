@@ -7,7 +7,8 @@ import com.youssef.foodplanner.model.model.Meal;
 import java.util.List;
 
 public interface AllMealsView {
-    public void showAllProducts(List<Meal> products);
-    public void showErrorMessage(String message);
+    void showAllProducts(List<Meal> meals);
+    void showErrorMessage(String message);
+    void showSuccessMessage(String message);
 
 }

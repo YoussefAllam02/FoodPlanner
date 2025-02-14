@@ -8,15 +8,10 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 
 public interface MealsRepository {
-
     Observable<List<Meal>> getAllMeals();
-
-
-     Completable insertMeals(Meal meal);
-
+    Observable<List<Meal>> getMealsByIngredient(String ingredient);
+    Completable insertMeals(Meal meal);
     Completable deleteAllMeals();
-
-    Completable addtoMealPlan(Meal meal); // ✅ Uses Completable for insertions
-
-    Completable addtoFavourite(Meal meal); // ✅ Already using Completable
+    Completable addToMealPlan(Meal meal);
+    Completable addToFavourite(Meal meal);
 }

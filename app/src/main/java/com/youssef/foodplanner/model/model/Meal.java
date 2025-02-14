@@ -30,6 +30,7 @@ public class Meal implements Serializable {
     private String mealArea;
 
     @ColumnInfo(name = "instructions")
+    @SerializedName("strInstructions")
     private String instructions;
 
     @ColumnInfo(name = "meal_thumb")
@@ -37,10 +38,12 @@ public class Meal implements Serializable {
     private String mealImage;
 
     @ColumnInfo(name = "tags")
+    @SerializedName("strTags")
     private String mealTags;
 
     @ColumnInfo(name = "youtube_url")
-    private String strYoutube; // New field for YouTube video URL
+    @SerializedName("strYoutube")
+    private String strYoutube;
 
     @ColumnInfo(name = "is_favorite")
     private boolean isFavorite; // New field to mark the meal as a favorite

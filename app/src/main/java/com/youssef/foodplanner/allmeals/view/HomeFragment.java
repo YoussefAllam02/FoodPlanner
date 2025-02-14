@@ -1,6 +1,7 @@
 package com.youssef.foodplanner.allmeals.view;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.youssef.foodplanner.R;
+import com.youssef.foodplanner.allmeals.presenter.AllMealsPresenterImpl;
+import com.youssef.foodplanner.db.localdata.MealLocalDataSourceImpl;
+import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
 import com.youssef.foodplanner.model.model.Meal;
+import com.youssef.foodplanner.model.model.MealsRepository;
+import com.youssef.foodplanner.model.model.MealsRepositoryImpl;
 
 import java.util.List;
 
-public class HomeFragment extends Fragment implements OnMealListener {
+public class HomeFragment extends Fragment implements  AllMealsView, OnMealListener {
 
     private NavController navController;
     private RecyclerView popularMealsRecyclerView;
     private AllMealsAdapter popularMealsAdapter;
     private View loadingGif;
-    private List<Meal> meals;
+
+    AllMealsPresenterImpl presenter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,31 +49,17 @@ public class HomeFragment extends Fragment implements OnMealListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize NavController
-        navController = Navigation.findNavController(view);
+         presenter=new AllMealsPresenterImpl(this,new MealsRepositoryImpl(
+                 MealRemoteDataSourceImpl.getInstance(),
+                 MealLocalDataSourceImpl.getInstance(requireContext())
+         ));
 
-        // Initialize RecyclerView and Adapter
+        navController = Navigation.findNavController(view);
         popularMealsRecyclerView = view.findViewById(R.id.rec_view_meals_popular);
         loadingGif = view.findViewById(R.id.loading_gif);
+        //popularMealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        popularMealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        popularMealsAdapter = new AllMealsAdapter(requireContext(), meals, this); // Pass 'this' as the OnMealListener
-        popularMealsRecyclerView.setAdapter(popularMealsAdapter);
-
-
-
-
-
-    }
-
-    public void displayMeals(List<Meal> meals) {
-        this.meals = meals; // Set the meals data
-        if (popularMealsAdapter != null) {
-            popularMealsAdapter.setMeals(meals); // Notify adapter to refresh the RecyclerView
-        }
-        if (loadingGif != null) {
-            loadingGif.setVisibility(View.GONE); // Hide loading gif once data is loaded
-        }
+        presenter.getMeals();
     }
 
     @Override
@@ -76,6 +70,24 @@ public class HomeFragment extends Fragment implements OnMealListener {
         // Navigate to the DetailedMealFragment
         Bundle bundle = new Bundle();
         bundle.putSerializable("meal", meal);
-        navController.navigate(R.id.action_home_to_detailedMeal, bundle); // Use the correct action ID
+        navController.navigate(R.id.action_home_to_detailedMeal, bundle);
+    }
+
+    @Override
+    public void showAllProducts(List<Meal> meals) {
+        popularMealsAdapter = new AllMealsAdapter(requireContext(), meals, this);
+        popularMealsRecyclerView.setAdapter(popularMealsAdapter);
+        Log.d("mealas", "Number of meals: " + meals.size());
+        if (popularMealsAdapter != null) {
+            popularMealsAdapter.setMeals(meals);
+        }
+        if (loadingGif != null) {
+            loadingGif.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+
     }
 }

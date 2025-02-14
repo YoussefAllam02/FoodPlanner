@@ -41,7 +41,6 @@ public class DetailedMeal extends Fragment {
 
 
         if (meal != null) {
-
             Glide.with(requireContext())
                     .load(meal.getMealImage())
                     .into(imgMealDetail);

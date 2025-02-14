@@ -4,10 +4,15 @@ import com.youssef.foodplanner.model.model.MealResponse;
 import com.youssef.foodplanner.model.model.MealResponse;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface ApiService {
-    @GET("search.php?s=") // Fetches all meals
+    @GET("random.php")
     Observable<MealResponse> getMeals();
+    @GET("lookup.php")
+    Single<MealResponse> getMealDetail(@Query("i") String id);
+
 }

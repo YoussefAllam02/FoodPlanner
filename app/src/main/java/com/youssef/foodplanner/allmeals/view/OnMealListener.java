@@ -3,5 +3,5 @@ package com.youssef.foodplanner.allmeals.view;
 import com.youssef.foodplanner.model.model.Meal;
 
 public interface OnMealListener {
-    void onFavProductClick(Meal meal); // Method to handle favorite product clicks
+    void onFavProductClick(Meal meal);
 }

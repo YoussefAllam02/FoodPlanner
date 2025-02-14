@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 @Entity(tableName = "meals")
@@ -16,18 +18,22 @@ public class Meal implements Serializable {
     private String idMeal;
 
     @ColumnInfo(name = "meal_name")
+    @SerializedName("strMeal")
     private String mealName;
 
     @ColumnInfo(name = "category")
+    @SerializedName("strCategory")
     private String category;
 
     @ColumnInfo(name = "area")
+    @SerializedName("strArea")
     private String mealArea;
 
     @ColumnInfo(name = "instructions")
     private String instructions;
 
     @ColumnInfo(name = "meal_thumb")
+    @SerializedName("strMealThumb")
     private String mealImage;
 
     @ColumnInfo(name = "tags")

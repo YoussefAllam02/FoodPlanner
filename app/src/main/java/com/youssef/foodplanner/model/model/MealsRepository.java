@@ -9,12 +9,12 @@ import io.reactivex.rxjava3.core.Observable;
 
 public interface MealsRepository {
 
-    Observable<List<Meal>> getAllMeals(); // ✅ Now returns an observable list of meals
+    Observable<List<Meal>> getAllMeals();
 
 
      Completable insertMeals(Meal meal);
 
-    Completable deleteAllMeals(); // ✅ Uses Completable since it only deletes data
+    Completable deleteAllMeals();
 
     Completable addtoMealPlan(Meal meal); // ✅ Uses Completable for insertions
 

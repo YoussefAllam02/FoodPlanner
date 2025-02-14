@@ -42,7 +42,6 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
     }
 
     private void loadHomeFragment() {
-        // Load HomeFragment to display the list of meals
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, new HomeFragment());
@@ -51,12 +50,12 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
 
     @Override
     public void showAllProducts(List<Meal> meals) {
-        // Show all meals in the HomeFragment (or a different fragment if needed)
+
         HomeFragment homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         if (homeFragment != null) {
             // Assuming HomeFragment has a method to set the meals to a RecyclerView adapter
-            homeFragment.displayMeals(meals);
+            //homeFragment.displayMeals(meals);
         }
     }
 

@@ -98,7 +98,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/mealtest" />
+                        tools:src="@drawable/mealtest" />
                 </androidx.cardview.widget.CardView>
 
                 <TextView
@@ -116,8 +116,11 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rec_view_meals_popular"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_meals"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="10dp"
                     app:layout_constraintStart_toStartOf="parent"

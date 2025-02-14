@@ -1,9 +1,11 @@
 package com.youssef.foodplanner.allmeals.view;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -17,12 +19,13 @@ import java.util.List;
 public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealViewHolder> {
     private final Context context;
     private List<Meal> meals;
-    private OnMealListener onMealListener; // Use OnMealListener instead of OnMealClickListener
+    private OnMealListener onMealListener;
 
     public AllMealsAdapter(Context context, List<Meal> meals, OnMealListener onMealListener) {
+        Log.d("Meal", "AllMealsAdapter constructor calledsize"+meals.size());
         this.context = context;
         this.meals = meals;
-        this.onMealListener = onMealListener; // Initialize OnMealListener
+        this.onMealListener = onMealListener;
     }
 
     public void setMeals(List<Meal> meals) {
@@ -40,13 +43,17 @@ public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealVi
     @Override
     public void onBindViewHolder(@NonNull MealViewHolder holder, int position) {
         Meal meal = meals.get(position);
-        holder.mealName.setText(meal.getMealName());
+        Log.d("Meal", "Meal Name: " + meal.getMealName());
+
+       // holder.mealName.setText(meal.getMealName());
         holder.mealCategory.setText(meal.getCategory());
-        Glide.with(holder.itemView.getContext())
+      //  holder.areainfo.setText(meal.getMealArea());
+        //holder.webview.loadUrl(meal.getStrYoutube());
+        Glide.with(holder.mealImage.getContext())
                 .load(meal.getMealImage())
                 .into(holder.mealImage);
 
-        // Set click listener for the entire item
+
         holder.itemView.setOnClickListener(v -> onMealListener.onFavProductClick(meal)); // Use onFavProductClick
     }
 
@@ -56,14 +63,16 @@ public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealVi
     }
 
     public static class MealViewHolder extends RecyclerView.ViewHolder {
-        TextView mealName, mealCategory;
+        TextView mealName, mealCategory, areainfo;
         ImageView mealImage;
+        WebView webview;
 
         public MealViewHolder(@NonNull View itemView, OnMealListener onMealListener) {
             super(itemView);
-            mealName = itemView.findViewById(R.id.meal_name);
+
             mealCategory = itemView.findViewById(R.id.meal_category);
             mealImage = itemView.findViewById(R.id.img_meal);
+
         }
     }
 }

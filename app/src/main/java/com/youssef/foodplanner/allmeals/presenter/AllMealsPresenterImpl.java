@@ -20,13 +20,12 @@ public class AllMealsPresenterImpl implements AllMealsPresenter, NetworkCallBack
         this.repository = repository;
     }
 
-
     public void getMeals() {
-
         repository.getAllMeals()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()) // Observe on the main thread
-                .subscribe(meals -> view.showAllProducts(meals));
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(meals -> view.showAllProducts(meals),
+                        throwable -> onFailure(throwable));
     }
 
     @Override
@@ -39,14 +38,12 @@ public class AllMealsPresenterImpl implements AllMealsPresenter, NetworkCallBack
 
     @Override
     public void addtoPlan(Meal meal) {
-
         repository.addtoMealPlan(meal)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
     }
 
-    // onSuccess method that is properly placed in the class
     public void onSuccess(MealResponse response) {
         if (response != null && response.getMeals() != null) {
             view.showAllProducts(response.getMeals());
@@ -55,13 +52,10 @@ public class AllMealsPresenterImpl implements AllMealsPresenter, NetworkCallBack
         }
     }
 
-
-
     public void onFailure(Throwable error) {
         Log.e("Error", "Failed to fetch products: " + error.getMessage());
         view.showErrorMessage("Failed to load products.");
     }
-
 
     @Override
     public void onFailure(String errorMessage) {

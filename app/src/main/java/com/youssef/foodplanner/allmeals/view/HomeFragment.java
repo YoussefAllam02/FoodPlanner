@@ -20,28 +20,32 @@ import com.youssef.foodplanner.allmeals.presenter.AllMealsPresenterImpl;
 import com.youssef.foodplanner.db.localdata.MealLocalDataSourceImpl;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
 import com.youssef.foodplanner.model.model.Meal;
-import com.youssef.foodplanner.model.model.MealsRepository;
 import com.youssef.foodplanner.model.model.MealsRepositoryImpl;
 
 import java.util.List;
 
-public class HomeFragment extends Fragment implements  AllMealsView, OnMealListener {
+public class HomeFragment extends Fragment implements AllMealsView, OnMealListener {
 
     private NavController navController;
     private RecyclerView popularMealsRecyclerView;
     private AllMealsAdapter popularMealsAdapter;
+
+    // RecyclerView & adapter for random meals (horizontal list)
+    private RecyclerView randomMealsRecyclerView;
+    private MealAdapter randomMealAdapter;
+
     private View loadingGif;
-
-    AllMealsPresenterImpl presenter;
-
+    private AllMealsPresenterImpl presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initialize non-view related logic here if needed.
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate your fragment layout (make sure it includes both RecyclerViews)
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -49,45 +53,70 @@ public class HomeFragment extends Fragment implements  AllMealsView, OnMealListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-         presenter=new AllMealsPresenterImpl(this,new MealsRepositoryImpl(
-                 MealRemoteDataSourceImpl.getInstance(),
-                 MealLocalDataSourceImpl.getInstance(requireContext())
-         ));
+        presenter = new AllMealsPresenterImpl(
+                this,
+                new MealsRepositoryImpl(
+                        MealRemoteDataSourceImpl.getInstance(),
+                        MealLocalDataSourceImpl.getInstance(requireContext())
+                )
+        );
 
         navController = Navigation.findNavController(view);
-        popularMealsRecyclerView = view.findViewById(R.id.rec_view_meals_popular);
-        loadingGif = view.findViewById(R.id.loading_gif);
-        //popularMealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+        // Find RecyclerViews from layout
+        popularMealsRecyclerView = view.findViewById(R.id.rec_view_meals_popular);
+        randomMealsRecyclerView = view.findViewById(R.id.rv_random_meals);
+        loadingGif = view.findViewById(R.id.loading_gif);
+
+        // Set layout managers
+        popularMealsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        randomMealsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        // Trigger presenter to load meals
         presenter.getMeals();
     }
 
     @Override
     public void onFavProductClick(Meal meal) {
-        // Handle favorite product click
+        // Handle click event for favorite meals
         Toast.makeText(requireContext(), "Added to favorites: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
 
-        // Navigate to the DetailedMealFragment
+
         Bundle bundle = new Bundle();
         bundle.putSerializable("meal", meal);
-        navController.navigate(R.id.action_home_to_detailedMeal, bundle);
+        navController.navigate(R.id.action_home_to_favourite, bundle);
     }
 
     @Override
     public void showAllProducts(List<Meal> meals) {
+        // Setup adapter for popular meals
         popularMealsAdapter = new AllMealsAdapter(requireContext(), meals, this);
         popularMealsRecyclerView.setAdapter(popularMealsAdapter);
-        Log.d("mealas", "Number of meals: " + meals.size());
-        if (popularMealsAdapter != null) {
-            popularMealsAdapter.setMeals(meals);
-        }
+
+        // For random meals, pick a subset (e.g., first 5 items)
+        List<Meal> randomMeals = meals.subList(0, Math.min(5, meals.size()));
+        randomMealAdapter = new MealAdapter(requireContext(), randomMeals, meal -> {
+            Toast.makeText(requireContext(), "Random meal clicked: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
+        });
+        randomMealsRecyclerView.setAdapter(randomMealAdapter);
+
         if (loadingGif != null) {
             loadingGif.setVisibility(View.GONE);
         }
+
+        Log.d("HomeFragment", "Loaded " + meals.size() + " meals.");
     }
 
     @Override
     public void showErrorMessage(String message) {
-
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onMealItemClick(Meal meal) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("meal", meal);
+        navController.navigate(R.id.action_home_to_detailedMeal, bundle);
     }
 }

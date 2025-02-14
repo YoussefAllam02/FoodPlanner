@@ -14,5 +14,7 @@ public interface ApiService {
     Observable<MealResponse> getMeals();
     @GET("lookup.php")
     Single<MealResponse> getMealDetail(@Query("i") String id);
+    //@GET("filter.php?")
+  //  Call<MealResponse> getMealsByCategory(@Query("i") category:String)
 
 }

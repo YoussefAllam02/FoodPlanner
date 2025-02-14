@@ -16,13 +16,13 @@ import com.youssef.foodplanner.R;
 
 import java.util.List;
 
-public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealViewHolder> {
+public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder> {
     private final Context context;
     private List<Meal> meals;
     private OnMealListener onMealListener;
 
-    public AllMealsAdapter(Context context, List<Meal> meals, OnMealListener onMealListener) {
-        Log.d("Meal", "AllMealsAdapter constructor called, size: " + meals.size());
+    public MealAdapter(Context context, List<Meal> meals, OnMealListener onMealListener) {
+        Log.d("Meal", "MealAdapter constructor called, size: " + meals.size());
         this.context = context;
         this.meals = meals;
         this.onMealListener = onMealListener;
@@ -58,7 +58,7 @@ public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealVi
             }
         });
 
-        // If there's a favorite button, handle its click separately
+        // Handle favorite button click separately
         holder.favButton.setOnClickListener(v -> {
             if (onMealListener != null) {
                 onMealListener.onFavProductClick(meal);

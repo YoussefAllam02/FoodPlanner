@@ -8,15 +8,14 @@
     android:layout_height="match_parent"
     tools:context=".allmeals.view.HomeFragment">
 
-    <!-- Loading GIF -->
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/loading_gif"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/loading_gif"
         android:visibility="gone"/>
 
@@ -35,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!-- Header -->
+                <!-- Header remains the same -->
                 <LinearLayout
                     android:id="@+id/header"
                     android:layout_width="match_parent"
@@ -68,7 +67,7 @@
                         android:src="@drawable/ic_baseline_search_24" />
                 </LinearLayout>
 
-                <!-- "What would you like to eat" label -->
+                <!-- “What would you like to eat” stays below the header -->
                 <TextView
                     android:id="@+id/tv_would_like_to_eat"
                     android:layout_width="wrap_content"
@@ -82,46 +81,61 @@
                     app:layout_constraintTop_toBottomOf="@id/header"
                     app:layout_constraintStart_toStartOf="@id/header" />
 
-                <!-- Horizontal RecyclerView for Random Meals -->
+                <!--
+                    Now place the RecyclerView (which uses item_meals layout) where the CardView was before.
+                    This will show your list (e.g., popular items) at the top.
+                -->
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_random_meals"
+                    android:id="@+id/rec_view_meals_popular"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="25dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_meals"
                     app:layout_constraintTop_toBottomOf="@id/tv_would_like_to_eat"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                <!-- The rest of your layout... -->
+                <!-- Optional: Adjust this label if needed -->
                 <TextView
                     android:id="@+id/tv_over_pup_items"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    tools:listitem="@layout/card"
                     android:layout_marginTop="18dp"
                     android:fontFamily="@font/myfont"
                     android:text="over popular items"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/rv_random_meals"
+                    app:layout_constraintTop_toBottomOf="@id/rec_view_meals_popular"
                     app:layout_constraintStart_toStartOf="@id/tv_would_like_to_eat" />
 
-                <!-- RecyclerView for other meals (if needed) -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rec_view_meals_popular"
+                <!-- Now move the random meal CardView to the RecyclerView’s old spot -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/random_meal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="200dp"
                     android:layout_marginStart="25dp"
-                    android:layout_marginEnd="10dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="25dp"
+                    android:elevation="2dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardUseCompatPadding="true"
                     app:layout_constraintTop_toBottomOf="@id/tv_over_pup_items"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- Continue with the rest of your layout -->
+                    <ImageView
+                        android:id="@+id/img_random_meal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/mealtest" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Category label and its CardView remain unchanged -->
                 <TextView
                     android:id="@+id/tv_category"
                     android:layout_width="wrap_content"
@@ -132,7 +146,7 @@
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/rec_view_meals_popular"
+                    app:layout_constraintTop_toBottomOf="@id/random_meal"
                     app:layout_constraintStart_toStartOf="@id/rec_view_meals_popular" />
 
                 <androidx.cardview.widget.CardView

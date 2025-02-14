@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_home_to_detailedMeal"
             app:destination="@id/detailedMealFragment" />
+        <argument
+            android:name="meal"
+            app:argType="com.youssef.foodplanner.model.model.Meal" />
     </fragment>
 
     <fragment

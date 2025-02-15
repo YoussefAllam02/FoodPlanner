@@ -6,6 +6,7 @@ import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSource;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class MealsRepositoryImpl implements MealsRepository {
         this.localDataSource = localDataSource;
     }
 
+    @Override
+    public Single<MealResponse> getRandomMeal() {
+        return remoteDataSource.getRandomMeal()
+                .subscribeOn(Schedulers.io());
+    }
 
     @Override
     public Observable<List<Meal>> getAllMeals() {

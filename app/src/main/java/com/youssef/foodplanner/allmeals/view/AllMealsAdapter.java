@@ -49,14 +49,14 @@ public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealVi
                 .load(meal.getMealImage())
                 .into(holder.mealImage);
 
-        // Handle item click
+
         holder.itemView.setOnClickListener(v -> {
             if (onMealListener != null) {
                 onMealListener.onMealItemClick(meal);
             }
         });
 
-        // Handle favorite button click (if exists)
+
         if (holder.favButton != null) {
             holder.favButton.setOnClickListener(v -> {
                 if (onMealListener != null) {

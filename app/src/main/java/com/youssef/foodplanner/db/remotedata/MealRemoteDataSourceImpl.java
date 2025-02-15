@@ -4,11 +4,11 @@ import com.youssef.foodplanner.model.model.MealResponse;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
 
 public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
@@ -36,16 +36,6 @@ public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
         service = retrofit.create(ApiService.class);
     }
 
-
-    public Observable<MealResponse> makeNetworkCall() {
-        return service.getMealsByIngredient()
-                .subscribeOn(Schedulers.io()) // ✅ Background thread
-                .observeOn(AndroidSchedulers.mainThread()).toObservable(); // ✅ UI thread
-    }
-
-
-
-
     @Override
     public Observable<MealResponse> getAllMeals() {
         return service.getAllMeals("") // Fetch all meals (empty query)
@@ -60,5 +50,12 @@ public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .toObservable();
+    }
+
+    @Override
+    public Single<MealResponse> getRandomMeal() {
+        return service.getRandomMeal()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.youssef.foodplanner.R;
 import com.youssef.foodplanner.model.model.Meal;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder> {
@@ -20,16 +22,22 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
     private OnMealListener onMealListener;
 
     public MealAdapter(Context context, List<Meal> meals, OnMealListener onMealListener) {
-        Log.d("Meal", "MealAdapter constructor called, size: " + meals.size());
         this.context = context;
-        this.meals = meals;
+        this.meals = (meals != null) ? meals : new ArrayList<>();  // Ensure the list is not null
         this.onMealListener = onMealListener;
+    }
+
+
+    public interface OnMealListener {
+        void onMealItemClick(Meal meal);
+        void onFavProductClick(Meal meal);
     }
 
     public void setMeals(List<Meal> meals) {
         this.meals = meals;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, Math.min(meals.size(),10));
     }
+
 
     @NonNull
     @Override
@@ -44,6 +52,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
         Log.d("Meal", "Meal Name: " + meal.getMealName());
 
         holder.mealCategory.setText(meal.getCategory());
+        holder.mealName.setText(meal.getMealName());
+   holder.MealArea.setText(meal.getMealArea());
 
         Glide.with(holder.mealImage.getContext())
                 .load(meal.getMealImage())
@@ -73,6 +83,11 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
 
     public static class MealViewHolder extends RecyclerView.ViewHolder {
         TextView mealCategory;
+        TextView mealName;
+
+        TextView MealArea;
+
+
         ImageView mealImage;
         ImageView favButton;
 
@@ -80,6 +95,10 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
             super(itemView);
             mealCategory = itemView.findViewById(R.id.meal_category);
             mealImage = itemView.findViewById(R.id.img_meal);
+            MealArea = itemView.findViewById(R.id.meal_area);
+            mealName = itemView.findViewById(R.id.meal_name);
+
+
            // favButton = itemView.findViewById(R.id.img_fav); // Ensure this ID exists in your layout
         }
     }

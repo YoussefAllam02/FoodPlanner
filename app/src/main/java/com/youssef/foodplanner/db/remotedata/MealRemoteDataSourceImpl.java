@@ -45,8 +45,13 @@ public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
     }
 
     @Override
+    public Observable<MealResponse> filterByIngredient(String ingredient) {
+        return service.filterByIngredient(ingredient).toObservable();
+    }
+
+    @Override
     public Observable<MealResponse> getMealsByIngredient(String ingredient) {
-        return service.getMealsByIngredient()
+        return service.getMealsByIngredient(ingredient) // Pass the ingredient
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .toObservable();
@@ -58,4 +63,12 @@ public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Single<MealResponse> getMealById(String mealId) {
+        return service.getMealById(mealId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+    
 }

@@ -1,7 +1,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/homeFragment"> <!-- Start with the login fragment -->
+    app:startDestination="@id/homeFragment">
 
     <!-- Auth Flow -->
     <fragment
@@ -44,7 +44,7 @@
             android:id="@+id/action_home_to_detailedMeal"
             app:destination="@id/detailedMealFragment" />
         <argument
-            android:name="meal"
+            android:name="mealId"
             app:argType="com.youssef.foodplanner.model.model.Meal" />
     </fragment>
 
@@ -60,11 +60,11 @@
 
     <fragment
         android:id="@+id/detailedMealFragment"
-        android:name="com.youssef.foodplanner.allmeals.view.DetailedMeal"
+        android:name="com.youssef.foodplanner.allmeals.view.MealDetailFragment"
         android:label="Detailed Meal"
-        tools:layout="@layout/fragment_detailed_meal">
+        tools:layout="@layout/fragment_meal_detail">
         <argument
-            android:name="meal"
-            app:argType="com.youssef.foodplanner.model.model.Meal" />
+            android:name="mealId"
+        app:argType="string" />
     </fragment>
 </navigation>

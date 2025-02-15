@@ -1,6 +1,5 @@
 package com.youssef.foodplanner.db.remotedata;
 
-import com.youssef.foodplanner.allmeals.view.DetailedMeal;
 import com.youssef.foodplanner.model.model.MealResponse;
 
 import io.reactivex.rxjava3.core.Single;
@@ -8,17 +7,17 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface ApiService {
-    @GET("filter.php")
-    Single<MealResponse> getMealsByIngredient();
 
+    @GET("filter.php")
+    Single<MealResponse> getMealsByIngredient(@Query("i") String ingredient);
     @GET("search.php")
     Single<MealResponse> searchMeal(@Query("s") String mealName);
+    @GET("lookup.php")
+    Single<MealResponse> getMealById(@Query("i") String mealId);
 
     @GET("search.php")
     Single<MealResponse> listMealsByFirstLetter(@Query("f") String letter);
 
-    @GET("lookup.php")
-    Single<DetailedMeal> getMealDetails(@Query("i") int mealId);
 
     @GET("random.php")
     Single<MealResponse> getRandomMeal();

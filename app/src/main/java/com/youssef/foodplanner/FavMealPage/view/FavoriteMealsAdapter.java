@@ -63,10 +63,10 @@ public class FavoriteMealsAdapter extends RecyclerView.Adapter<FavoriteMealsAdap
 
         public ViewHolder(View v) {
             super(v);
-            thumbnail = v.findViewById(R.id.img_meal_detail);
+            thumbnail = v.findViewById(R.id.img_meal);
             title = v.findViewById(R.id.meal_name);
-            description = v.findViewById(R.id.meal_info);
-            constraintLayout = v.findViewById(R.id.details_root);
+
+        
         }
     }
 

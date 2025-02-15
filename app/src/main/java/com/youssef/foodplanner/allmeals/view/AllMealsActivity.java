@@ -27,6 +27,7 @@ import java.util.List;
 
 public class AllMealsActivity extends AppCompatActivity implements AllMealsView, OnMealListener {
     private AllMealsPresenter presenter;
+    private String[] trendingIngredients = {"seafood", "beef", "chicken"};
     private ImageView randomMealImage;
     private RecyclerView ingredientMealsRecyclerView;
     private AllMealsAdapter ingredientMealsAdapter;
@@ -126,5 +127,19 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
     @Override
     public void onMealItemClick(Meal meal) {
         // Handle meal item click (e.g., navigate to detailed meal view)
+    }
+    @Override
+    public void onRefresh() {
+        // Handle refresh logic if needed
+        // For example, if this activity has a SwipeRefreshLayout, you can call:
+         repository.clearCache();
+         fetchData();
+    }
+    private void fetchData() {
+        presenter.getMeals();
+        presenter.getRandomMeal();
+        int randomIndex = (int) (Math.random() * trendingIngredients.length);
+        String selectedIngredient = trendingIngredients[randomIndex];
+        presenter.getMealsByIngredient(selectedIngredient);
     }
 }

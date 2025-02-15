@@ -10,4 +10,6 @@ public interface AllMealsView {
     void showErrorMessage(String message);
     void showSuccessMessage(String message);
     void displayMeals(List<Meal> meals);
+    void onRefresh();
+
 }

@@ -19,6 +19,7 @@ import java.util.List;
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder> {
     private final Context context;
     private List<Ingredient> ingredientList; // Use Ingredient list
+    private  onItemClickListener onItemClickListener;
 
     public IngredientAdapter(Context context, List<Ingredient> ingredientList) {
         this.context = context;
@@ -37,6 +38,10 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
         return new IngredientAdapter.IngredientViewHolder(view);
     }
 
+    public void setOnItemClickListener(IngredientAdapter.onItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull IngredientAdapter.IngredientViewHolder holder, int position) {
         Ingredient ingredient = ingredientList.get(position);
@@ -50,7 +55,10 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
 
                 .into(holder.ingredientImage);
 
-        // Item click listener
+        holder.itemView.setOnClickListener(v -> {
+            onItemClickListener.onItemClick(ingredient);
+
+        });
 
     }
 
@@ -65,8 +73,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.In
 
         public IngredientViewHolder(@NonNull View itemView) {
             super(itemView);
-            ingredientImage = itemView.findViewById(R.id.item_image); // ID from ingredient_item.xml
-            ingredientName = itemView.findViewById(R.id.item_name);   // ID from ingredient_item.xml
+            ingredientImage = itemView.findViewById(R.id.item_image);
+            ingredientName = itemView.findViewById(R.id.item_name);
         }
+    }
+    public  interface onItemClickListener{
+        void onItemClick(Ingredient ingredient );
     }
 }

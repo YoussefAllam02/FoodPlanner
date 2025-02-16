@@ -4,13 +4,13 @@ import java.util.List;
 
 public class IngredientResponse {
 
-    private List<Ingredient>Ingredient;
+    private List<Ingredient>meals;
 
-    public List<com.youssef.foodplanner.model.model.Ingredient> getIngredient() {
-        return Ingredient;
+    public List<Ingredient> getIngredient() {
+        return meals;
     }
 
-    public void setIngredient(List<com.youssef.foodplanner.model.model.Ingredient> ingredient) {
-        Ingredient = ingredient;
+    public void setIngredient(List<Ingredient> meals) {
+        this.meals = meals;
     }
 }

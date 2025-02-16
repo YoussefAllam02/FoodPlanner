@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -34,6 +36,25 @@ public class MealsRepositoryImpl implements MealsRepository {
                                MealLocalDataSource localDataSource) {
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
+    }
+
+    @Override
+    public Single<AreaData> getMealsByArea(String area) {
+        return remoteDataSource.getMealsByArea(area)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Single<AreaData> getMealsByCategory(String category) {
+        return remoteDataSource.getMealsByCategory(category)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Single<AreaData> getMealsByIngredients(String ingredient) {
+        return remoteDataSource.getMealsByIngredients(ingredient).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -133,6 +154,21 @@ public class MealsRepositoryImpl implements MealsRepository {
     public Single<AreaResponse> getArea() {
         return remoteDataSource.getAreas()
                 .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<MealResponse> filterByIngredient(String Ingredient) {
+        return null;
+    }
+
+    @Override
+    public Single<MealResponse> filterByCategory(String Category) {
+        return null;
+    }
+
+    @Override
+    public Single<AreaResponse> filterByArea(String area) {
+        return null;
     }
 
     @Override

@@ -41,17 +41,18 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal">
 
-                <!-- اسم الوجبة مع الأيقونة -->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <!-- Favicon -->
+
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:id="@+id/fav_button"
+                        android:layout_width="36dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/ic_favourite" />
 

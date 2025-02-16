@@ -19,6 +19,7 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     private final Context context;
     private List<Category> categoryList; // Use Category list
+    onItemClickListener onItemClickListener;
 
     public CategoryAdapter(Context context, List<Category> categoryList) {
         this.context = context;
@@ -48,14 +49,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 .load(categoryImageUrl)
                 .into(holder.categoryImage);
 
-        // Item click listener
+
         holder.itemView.setOnClickListener(v -> {
-            // Implement your click action here. Example:
-            // Category clickedCategory = categoryList.get(position);
-            // Intent intent = new Intent(context, MealActivity.class);
-            // intent.putExtra("category_name", clickedCategory.getStrCategory());
-            // context.startActivity(intent);
+            onItemClickListener.onItemClick(category);
+
         });
+    }
+
+    public void setOnItemClickListener(CategoryAdapter.onItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -72,5 +74,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             categoryImage = itemView.findViewById(R.id.item_image);
             categoryName = itemView.findViewById(R.id.item_name);
         }
+    }
+    public  interface onItemClickListener{
+        void onItemClick(Category category );
     }
 }

@@ -16,16 +16,21 @@ import com.youssef.foodplanner.model.model.Area;
 
 import java.util.List;
 
-public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder> {
+public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder>  {
     private final Context context;
     private List<Area> areaList;
 
+    public void setOnItemClickListener(AreaAdapter.onItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    private onItemClickListener onItemClickListener;
     public AreaAdapter(Context context, List<Area> areaList) {
         this.context = context;
         this.areaList = areaList;
     }
 
-    public void setAreaList(List<Area> areaList) { // Renamed to setAreaList
+    public void setAreaList(List<Area> areaList) {
         this.areaList = areaList;
         notifyDataSetChanged();
     }
@@ -47,8 +52,9 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
                 .load(flagUrl)
                 .into(holder.areaImage);
 
-        // Handle item click (if needed)
+
         holder.itemView.setOnClickListener(v -> {
+            onItemClickListener.onItemClick(area);
 
         });
 
@@ -71,5 +77,8 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
             areaName = itemView.findViewById(R.id.item_name);  // Correct ID
 
         }
+    }
+    public  interface onItemClickListener{
+        void onItemClick(Area area );
     }
 }

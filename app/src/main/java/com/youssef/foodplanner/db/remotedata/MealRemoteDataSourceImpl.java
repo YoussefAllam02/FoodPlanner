@@ -1,8 +1,10 @@
 package com.youssef.foodplanner.db.remotedata;
 
+import com.youssef.foodplanner.model.model.AreaData;
 import com.youssef.foodplanner.model.model.AreaResponse;
 import com.youssef.foodplanner.model.model.CategoryResponse;
 import com.youssef.foodplanner.model.model.IngredientResponse;
+import com.youssef.foodplanner.model.model.Meal;
 import com.youssef.foodplanner.model.model.MealResponse;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -30,7 +32,7 @@ public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
         return instance;
     }
 
-    private MealRemoteDataSourceImpl() {
+    public MealRemoteDataSourceImpl() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -64,7 +66,12 @@ public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
 
     @Override
     public Single<CategoryResponse> getCategories() {
-        return service.getCategories(). subscribeOn(Schedulers.io())
+        return service.getCategories();
+    }
+
+    @Override
+    public Single<MealResponse> filterByIngredient(String ingredient) {
+        return  service.filterByIngredient(ingredient) .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -75,27 +82,39 @@ public class MealRemoteDataSourceImpl implements MealRemoteDataSource {
     }
 
     @Override
-    public Single<AreaResponse> filterByArea(String area) {
+    public Single<MealResponse> filterByArea(String area) {
         return service.filterByArea(area) .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
     public Single<AreaResponse> getAreas() {
-        return service.getAreas(). subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return service.getAreas();
     }
 
     @Override
     public Single<MealResponse> getAllMeals(String query) {
-        return service.getAllMeals(query)  .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return service.getAllMeals(query) ;
+    }
+
+    @Override
+    public Single<AreaData> getMealsByArea(String area) {
+        return service.getMealsByArea(area);
+    }
+
+    @Override
+    public Single<AreaData> getMealsByCategory(String category) {
+        return service.getMealsByCategory(category);
+    }
+
+    @Override
+    public Single<AreaData> getMealsByIngredients(String ingredient) {
+        return service.getMealsByIngredients(ingredient);
     }
 
     @Override
     public Single<IngredientResponse> getIngredients() {
-        return service.getIngredients().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        return service.getIngredients();
     }
 
 

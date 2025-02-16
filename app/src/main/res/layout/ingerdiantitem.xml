@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
@@ -16,8 +17,8 @@
 
         <ImageView
             android:id="@+id/item_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:scaleType="centerCrop"
             android:src="@drawable/dish" />
 
@@ -25,9 +26,9 @@
             android:id="@+id/item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="5dp"
             android:text="Beef"
-            android:textSize="16sp"
+            android:textSize="13dp"
             android:textColor="@color/black" />
 
     </LinearLayout>

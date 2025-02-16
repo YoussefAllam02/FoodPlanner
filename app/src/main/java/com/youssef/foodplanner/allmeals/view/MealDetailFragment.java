@@ -36,6 +36,7 @@ public class MealDetailFragment extends Fragment {
     private MealsRepository repository;
 
     private ImageView mealImage;
+    private ImageView favButton;
     private TextView mealName;
     private TextView mealCategory;
     private TextView mealArea;
@@ -82,11 +83,14 @@ public class MealDetailFragment extends Fragment {
         mealInstructions = view.findViewById(R.id.meal_instructions);
         mealIngredients = view.findViewById(R.id.meal_ingredients);
         mealYoutube = view.findViewById(R.id.youtubeWebView);
+        favButton = view.findViewById(R.id.fav_button);
+
 
         fetchMealDetails();
 
         return view;
     }
+
 
     private void fetchMealDetails() {
         repository.getMealById(mealId)

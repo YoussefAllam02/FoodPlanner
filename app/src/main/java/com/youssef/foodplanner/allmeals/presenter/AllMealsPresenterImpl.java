@@ -1,5 +1,4 @@
 package com.youssef.foodplanner.allmeals.presenter;
-
 import android.util.Log;
 import com.youssef.foodplanner.allmeals.view.AllMealsView;
 import com.youssef.foodplanner.model.model.Meal;
@@ -28,7 +27,7 @@ public class AllMealsPresenterImpl implements AllMealsPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        meals -> view.displayMeals(meals),  // Fixed method call
+                        meals -> view.displayMeals(meals),
                         throwable -> view.showErrorMessage(throwable.getMessage())
                 );
         disposables.add(disposable);

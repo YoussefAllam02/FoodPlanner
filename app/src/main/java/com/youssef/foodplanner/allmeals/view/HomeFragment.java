@@ -1,7 +1,5 @@
 package com.youssef.foodplanner.allmeals.view;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,8 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.youssef.foodplanner.R;
 import com.youssef.foodplanner.allmeals.presenter.AllMealsPresenterImpl;
-import com.youssef.foodplanner.allmeals.view.AllMealsView;
-import com.youssef.foodplanner.allmeals.view.MealAdapter;
 import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
 import com.youssef.foodplanner.db.localdata.MealLocalDataSourceImpl;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSource;
@@ -30,7 +26,6 @@ import com.youssef.foodplanner.model.model.Meal;
 import com.youssef.foodplanner.model.model.MealsRepository;
 import com.youssef.foodplanner.model.model.MealsRepositoryImpl;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +59,7 @@ public class HomeFragment extends Fragment implements AllMealsView {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
         MealLocalDataSource localDataSource = new MealLocalDataSourceImpl(requireContext());
-        MealRemoteDataSource remoteDataSource = new MealRemoteDataSourceImpl();
+        MealRemoteDataSource remoteDataSource = MealRemoteDataSourceImpl.getInstance();
         repository = new MealsRepositoryImpl(remoteDataSource, localDataSource);
         presenter = new AllMealsPresenterImpl(this, repository);
 
@@ -84,9 +79,9 @@ public class HomeFragment extends Fragment implements AllMealsView {
         mealAdapter = new MealAdapter(getContext(), new ArrayList<>(), new MealAdapter.OnMealListener() {
             @Override
             public void onMealItemClick(Meal meal) {
-                // Navigate to MealDetailFragment with meal ID
+
                 Bundle bundle = new Bundle();
-                bundle.putString("mealId", meal.getIdMeal()); // Use the meal's ID
+                bundle.putString("mealId", meal.getIdMeal());
                 Navigation.findNavController(requireView())
                         .navigate(R.id.action_home_to_detailedMeal, bundle);
 
@@ -95,8 +90,26 @@ public class HomeFragment extends Fragment implements AllMealsView {
             @Override
             public void onFavProductClick(Meal meal) {
                 presenter.addToFav(meal);
+
             }
         });
+
+//                new MealAdapter() {
+//            @Override
+//            public void onMealItemClick(Meal meal) {
+//                // Navigate to MealDetailFragment with meal ID
+//                Bundle bundle = new Bundle();
+//                bundle.putString("mealId", meal.getIdMeal()); // Use the meal's ID
+//                Navigation.findNavController(requireView())
+//                        .navigate(R.id.action_home_to_detailedMeal, bundle);
+//
+//            }
+//
+//            @Override
+//            public void onFavProductClick(Meal meal) {
+//                presenter.addToFav(meal);
+//            }
+//        });
 
 
         mealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -182,7 +195,7 @@ public class HomeFragment extends Fragment implements AllMealsView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Remove the periodic task when the fragment is destroyed
+
         handler.removeCallbacks(runnable);
     }
 }

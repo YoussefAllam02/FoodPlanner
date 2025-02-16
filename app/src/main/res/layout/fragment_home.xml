@@ -5,18 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    android:padding="8dp">
+    android:padding="15dp">
 
-    <!-- Search Bar with Hint -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_bar_bg"
-        android:iconifiedByDefault="false"
-        android:padding="8dp" />
 
-    <!-- Swipe-to-Refresh Layout -->
+
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -30,7 +23,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
 
                 <!-- Random Meal Section -->
                 <androidx.cardview.widget.CardView

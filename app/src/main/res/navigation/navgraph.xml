@@ -67,4 +67,9 @@
             android:name="mealId"
         app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.youssef.foodplanner.SearchMeal.View.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>

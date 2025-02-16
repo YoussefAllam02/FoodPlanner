@@ -64,7 +64,7 @@ public class MealDetailFragment extends Fragment {
         }
 
         // Initialize repository
-        MealRemoteDataSourceImpl remoteDataSource = new MealRemoteDataSourceImpl();
+        MealRemoteDataSourceImpl remoteDataSource = MealRemoteDataSourceImpl.getInstance();
         MealLocalDataSourceImpl localDataSource = MealLocalDataSourceImpl.getInstance(requireContext());
         repository = new MealsRepositoryImpl(remoteDataSource, localDataSource);
     }

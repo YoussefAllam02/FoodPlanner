@@ -16,7 +16,7 @@ import com.youssef.foodplanner.model.model.Meal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder> {
+public  class MealAdapter extends RecyclerView.Adapter<com.youssef.foodplanner.allmeals.view.MealAdapter.MealViewHolder> {
     private final Context context;
     private List<Meal> meals;
     private OnMealListener onMealListener;
@@ -26,6 +26,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
         this.meals = (meals != null) ? meals : new ArrayList<>();  // Ensure the list is not null
         this.onMealListener = onMealListener;
     }
+
+
 
 
     public interface OnMealListener {
@@ -99,7 +101,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
             mealName = itemView.findViewById(R.id.meal_name);
 
 
-           // favButton = itemView.findViewById(R.id.img_fav); // Ensure this ID exists in your layout
+
         }
     }
 }

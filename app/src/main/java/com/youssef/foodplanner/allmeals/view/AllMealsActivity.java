@@ -44,7 +44,7 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
         }
 
         // Initialize data sources and repository
-        MealRemoteDataSource remoteDataSource = new MealRemoteDataSourceImpl();
+        MealRemoteDataSource remoteDataSource = MealRemoteDataSourceImpl.getInstance();
         MealLocalDataSource localDataSource = MealLocalDataSourceImpl.getInstance(this);
         repository = new MealsRepositoryImpl(remoteDataSource, localDataSource);
 

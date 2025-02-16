@@ -1,31 +1,26 @@
 package com.youssef.foodplanner.model.model;
 
 import android.util.Log;
-
 import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
-import com.youssef.foodplanner.db.remotedata.ApiService;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSource;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealsRepositoryImpl implements MealsRepository {
-
     private final MealRemoteDataSource remoteDataSource;
     private final MealLocalDataSource localDataSource;
     private static MealsRepositoryImpl repo = null;
 
-    // Caching variables
-    private final Map<String, List<Meal>> cache = new HashMap<>(); // Cache for meals
-    private final long CACHE_EXPIRY_TIME = 10 * 60 * 1000;
-    private final Map<String, Long> cacheTimestamps = new HashMap<>(); // Cache timestamps
+    // Caching
+    private final Map<String, List<Meal>> cache = new HashMap<>();
+    private final long CACHE_EXPIRY_TIME = 10 * 60 * 1000; // 10 minutes
+    private final Map<String, Long> cacheTimestamps = new HashMap<>();
 
     public static MealsRepositoryImpl getInstance(MealRemoteDataSource remoteDataSource,
                                                   MealLocalDataSource localDataSource) {
@@ -40,6 +35,28 @@ public class MealsRepositoryImpl implements MealsRepository {
         this.remoteDataSource = remoteDataSource;
         this.localDataSource = localDataSource;
     }
+
+    @Override
+    public Observable<List<Meal>> getAllMeals() {
+        String cacheKey = "all_meals";
+        if (isCacheValid(cacheKey)) {
+            return Observable.just(cache.get(cacheKey));
+        }
+
+        return remoteDataSource.getAllMeals("")
+                .map(MealResponse::getMeals)
+                .doOnSuccess(meals -> {
+                    cache.put(cacheKey, meals);
+                    cacheTimestamps.put(cacheKey, System.currentTimeMillis());
+                })
+                .toObservable() // Convert Single to Observable AFTER handling caching
+                .onErrorReturn(throwable -> {
+                    Log.e("MealsRepositoryImpl", "Error fetching all meals", throwable);
+                    return new ArrayList<>();
+                })
+                .subscribeOn(Schedulers.io());
+    }
+
     @Override
     public Single<Meal> getMealById(String mealId) {
         return remoteDataSource.getMealById(mealId)
@@ -51,6 +68,28 @@ public class MealsRepositoryImpl implements MealsRepository {
                     return Single.just(mealResponse.getMeals().get(0));
                 });
     }
+
+    @Override
+    public Observable<List<Meal>> getMealsByIngredient(String ingredient) {
+        String cacheKey = "meals_by_ingredient_" + ingredient;
+        if (isCacheValid(cacheKey)) {
+            return Observable.just(cache.get(cacheKey));
+        }
+
+        return remoteDataSource.getMealsByIngredient(ingredient)
+                .map(MealResponse::getMeals)
+                .doOnSuccess(meals -> {
+                    cache.put(cacheKey, meals);
+                    cacheTimestamps.put(cacheKey, System.currentTimeMillis());
+                })
+                .toObservable() // Convert Single to Observable AFTER handling caching
+                .onErrorReturn(throwable -> {
+                    Log.e("MealsRepositoryImpl", "Error fetching meals by ingredient", throwable);
+                    return new ArrayList<>();
+                })
+                .subscribeOn(Schedulers.io());
+    }
+
     @Override
     public Single<MealResponse> getRandomMeal() {
         String cacheKey = "random_meal";
@@ -60,77 +99,63 @@ public class MealsRepositoryImpl implements MealsRepository {
 
         return remoteDataSource.getRandomMeal()
                 .doOnSuccess(mealResponse -> {
-                    cache.put(cacheKey, mealResponse.getMeals()); // Cache the result
-                    cacheTimestamps.put(cacheKey, System.currentTimeMillis()); // Update timestamp
+                    cache.put(cacheKey, mealResponse.getMeals());
+                    cacheTimestamps.put(cacheKey, System.currentTimeMillis());
                 })
                 .subscribeOn(Schedulers.io());
     }
 
-    @Override
-    public Observable<List<Meal>> getAllMeals() {
-        String cacheKey = "all_meals";
-        if (isCacheValid(cacheKey)) {
-            return Observable.just(cache.get(cacheKey)); // Return cached data
-        }
-
-        return remoteDataSource.getAllMeals()
-                .map(MealResponse::getMeals)
-                .doOnNext(meals -> {
-                    cache.put(cacheKey, meals); // Cache the result
-                    cacheTimestamps.put(cacheKey, System.currentTimeMillis()); // Update timestamp
-                })
-                .onErrorReturn(throwable -> {
-                    Log.e("MealsRepositoryImpl", "Error fetching meals", throwable);
-                    return new ArrayList<>(); // Return an empty list in case of error
-                })
-                .subscribeOn(Schedulers.io());
-    }
-
-    @Override
-
-    public Observable<List<Meal>> getMealsByIngredient(String ingredient) {
-        String cacheKey = "meals_by_ingredient_" + ingredient;
-
-        Log.d("MealsRepositoryImpl", "Fetching new data for ingredient: " + ingredient);
-        return remoteDataSource.getMealsByIngredient(ingredient)
-                .map(MealResponse::getMeals)
-                .doOnNext(meals -> {
-                    cache.put(cacheKey, meals); // Cache the result
-                    cacheTimestamps.put(cacheKey, System.currentTimeMillis()); // Update timestamp
-                })
-                .subscribeOn(Schedulers.io());
-    }
     @Override
     public Completable insertMeals(Meal meal) {
-        return localDataSource.insertMeals(meal);
+        return localDataSource.insertMeals(meal)
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Completable deleteAllMeals() {
-        return localDataSource.deleteAllMeals();
+        return localDataSource.deleteAllMeals()
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Completable addToMealPlan(Meal meal) {
-        return localDataSource.insertMealToPlan(meal);
+        return localDataSource.insertMealToPlan(meal)
+                .subscribeOn(Schedulers.io());
     }
 
     @Override
     public Completable addToFavourite(Meal meal) {
-        return localDataSource.insertMealToFavorites(meal);
+        return localDataSource.insertMealToFavorites(meal)
+                .subscribeOn(Schedulers.io());
     }
 
-    // Helper method to check if cache is still valid
+    @Override
+    public Single<AreaResponse> getArea() {
+        return remoteDataSource.getAreas()
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<CategoryResponse> getCategory() {
+        return remoteDataSource.getCategories()
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<IngredientResponse> getIngredient() {
+        return remoteDataSource.getIngredients()
+                .subscribeOn(Schedulers.io());
+    }
+
     private boolean isCacheValid(String cacheKey) {
         if (cache.containsKey(cacheKey) && cacheTimestamps.containsKey(cacheKey)) {
             long currentTime = System.currentTimeMillis();
             long cacheTime = cacheTimestamps.get(cacheKey);
-            return (currentTime - cacheTime) < CACHE_EXPIRY_TIME; // Check if cache is still valid
+            return (currentTime - cacheTime) < CACHE_EXPIRY_TIME;
         }
         return false;
     }
 
-    // Optional: Method to clear the cache
     @Override
     public void clearCache() {
         cache.clear();

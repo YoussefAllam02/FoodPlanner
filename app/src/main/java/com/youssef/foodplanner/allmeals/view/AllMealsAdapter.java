@@ -80,7 +80,7 @@ public class AllMealsAdapter extends RecyclerView.Adapter<AllMealsAdapter.MealVi
             super(itemView);
             mealCategory = itemView.findViewById(R.id.meal_category);
             mealImage = itemView.findViewById(R.id.img_meal);
-           // favButton = itemView.findViewById(R.id.img_fav); // Ensure this ID exists in your layout
+           // favButton = itemView.findViewById(R.id.fav_button); // Ensure this ID exists in your layout
         }
     }
 }

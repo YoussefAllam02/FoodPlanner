@@ -36,6 +36,7 @@ public class FavoriteMealsAdapter extends RecyclerView.Adapter<FavoriteMealsAdap
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.favourite_item, parent, false);
         return new ViewHolder(view);
+
     }
 
     @Override
@@ -60,13 +61,19 @@ public class FavoriteMealsAdapter extends RecyclerView.Adapter<FavoriteMealsAdap
                     .error(R.drawable.ic_area)
                     .into(holder.mealImage);
         } else {
-            holder.mealImage.setImageResource(R.drawable.ic_favourite);
+            holder.mealImage.setImageResource(R.drawable.favorite);
         }
 
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onMealClick(meal);
+            }
+        });
+        // In onBindViewHolder
+        holder.removebtn.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onRemoveClick(meal);
             }
         });
     }
@@ -85,16 +92,21 @@ public class FavoriteMealsAdapter extends RecyclerView.Adapter<FavoriteMealsAdap
         final ImageView mealImage;
         final TextView mealName;
         final TextView mealCategory;
+        final ImageView removebtn;
+        final ImageView favButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mealImage = itemView.findViewById(R.id.favorite_meal_image);
             mealName = itemView.findViewById(R.id.favorite_meal_name);
             mealCategory = itemView.findViewById(R.id.favorite_meal_category);
+            removebtn = itemView.findViewById(R.id.removebtn);
+            favButton = itemView.findViewById(R.id.fav_button);
         }
     }
 
     public interface OnMealClickListener {
         void onMealClick(Meal meal);
+        void onRemoveClick(Meal meal);
     }
 }

@@ -91,4 +91,9 @@
             android:id="@+id/action_mealListFragment_to_detailedMealFragment"
             app:destination="@id/detailedMealFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/mealPlanFragment"
+        android:name="com.youssef.foodplanner.MealPlan.view.MealPlanFragment"
+        android:label="fragment_meal_plan"
+        tools:layout="@layout/fragment_meal_plan" />
 </navigation>

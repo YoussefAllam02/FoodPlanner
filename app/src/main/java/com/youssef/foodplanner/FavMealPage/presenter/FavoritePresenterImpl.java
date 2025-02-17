@@ -32,7 +32,7 @@ public class FavoritePresenterImpl implements FavouritePresenter {
 
     @Override
     public void delete(Meal meal) {
-        disposables.add(repository.deleteFromFavorites(meal) // New method needed
+        disposables.add(repository.deleteFromFavorites(meal)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -40,7 +40,19 @@ public class FavoritePresenterImpl implements FavouritePresenter {
                         error -> view.showErrorMessage("Error deleting meal")
                 ));
     }
+
+    @Override
+    public void deleteFromFavorites(Meal meal) {
+        disposables.add(repository.deleteFromFavorites(meal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> getFavorites(), // Refresh list after deletion
+                        throwable -> view.showErrorMessage(throwable.getMessage())
+                ));
+        }
     }
+
 
 
 

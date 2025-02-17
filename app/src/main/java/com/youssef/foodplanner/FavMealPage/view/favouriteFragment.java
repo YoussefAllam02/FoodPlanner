@@ -80,6 +80,7 @@ public class favouriteFragment extends Fragment implements FavoriteMealsView, Fa
             adapter = new FavoriteMealsAdapter(getContext(),this);
             adapter.setMeals(meals);
             recyclerView.setAdapter(adapter);
+            adapter.setMeals(meals != null ? meals : new ArrayList<>());
         }
     }
 
@@ -95,5 +96,10 @@ public class favouriteFragment extends Fragment implements FavoriteMealsView, Fa
         Bundle bundle = new Bundle();
         bundle.putString("mealId", meal.getIdMeal()+"");
         navController.navigate(R.id.action_favourite_to_detailedMeal, bundle);
+    }
+
+    @Override
+    public void onRemoveClick(Meal meal) {
+        presenter.deleteFromFavorites(meal);
     }
 }

@@ -6,47 +6,44 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="6dp"
-    app:cardBackgroundColor="@color/white"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="12dp"
+        android:orientation="vertical">
 
+        <!-- Meal Image -->
         <ImageView
-            android:id="@+id/favorite_meal_image"
+            android:id="@+id/random_meal_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:contentDescription="Meal image"
-            android:background="@drawable/image_bg"/>
+            android:contentDescription="@string/random_meal_image"
+            android:background="@drawable/image_bg" />
 
+        <!-- Meal Name -->
         <TextView
-            android:id="@+id/favorite_meal_name"
+            android:id="@+id/random_meal_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:text="@string/random_meal_name" />
 
+        <!-- Meal Category -->
         <TextView
-            android:id="@+id/favorite_meal_category"
+            android:id="@+id/random_meal_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="16sp"
-            android:textColor="@color/black"/>
-        <ImageView
-           android:id="@+id/removebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/ic_backspace"/>
+            android:textColor="@color/black"
+            android:text="random_meal_category" />
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

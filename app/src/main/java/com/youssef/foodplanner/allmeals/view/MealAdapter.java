@@ -99,6 +99,7 @@ public  class MealAdapter extends RecyclerView.Adapter<com.youssef.foodplanner.a
             mealImage = itemView.findViewById(R.id.img_meal);
             MealArea = itemView.findViewById(R.id.meal_area);
             mealName = itemView.findViewById(R.id.meal_name);
+            favButton=itemView.findViewById(R.id.fav_button);
 
 
 

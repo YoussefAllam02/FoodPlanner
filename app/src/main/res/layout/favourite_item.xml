@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:contentDescription="favorite_meal_image"
-            android:background="@drawable/image_bg" />
+            android:contentDescription="Meal image"
+            android:background="@drawable/image_bg"/>
 
         <TextView
             android:id="@+id/favorite_meal_name"
@@ -33,8 +33,7 @@
             android:layout_marginTop="8dp"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:text="name" />
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/favorite_meal_category"
@@ -42,7 +41,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="16sp"
-            android:textColor="@color/black"
-            android:text="favorite_meal_category" />
+            android:textColor="@color/black"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_backspace"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

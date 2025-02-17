@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
 
 public class MealLocalDataSourceImpl implements MealLocalDataSource {
     private MealDao mealDao;
@@ -28,7 +29,7 @@ public class MealLocalDataSourceImpl implements MealLocalDataSource {
 
 
     public Observable<List<Meal>> getAllMeals() {
-        return mealDao.getAllMeals(); // ✅ Now returns Observable instead of LiveData
+        return mealDao.getfavmeal(); // ✅ Now returns Observable instead of LiveData
     }
 
     @Override
@@ -47,7 +48,19 @@ public class MealLocalDataSourceImpl implements MealLocalDataSource {
     }
 
     @Override
-    public Completable insertMealToFavorites(Meal meal) {
-        return null;
+    public Single<List<Meal>> getFavoriteMeals() {
+        return mealDao.getFavoriteMeals();
     }
+
+    @Override
+    public Completable insertMealToFavorites(Meal meal) {
+        return  mealDao.insert(meal);
+    }
+
+    @Override
+    public Completable deleteFromFavorites(Meal meal) {
+        return mealDao.deleteFromFavorites(meal.getIdMeal());
+    }
+
+
 }

@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface MealsRepository {
 
-
-
+    Completable deleteFromFavorites(Meal meal);
+    Single<List<Meal>> getFavoriteMeals();
     Single<AreaData>getMealsByArea(String area);
     Single<AreaData>getMealsByCategory(String category);
     Single<AreaData>getMealsByIngredients(String ingredient);

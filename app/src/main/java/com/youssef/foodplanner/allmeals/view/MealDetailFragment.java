@@ -18,15 +18,16 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.youssef.foodplanner.R;
+import com.youssef.foodplanner.db.localdata.MealLocalDataSourceImpl;
 import com.youssef.foodplanner.model.model.Meal;
 import com.youssef.foodplanner.model.model.MealsRepository;
 import com.youssef.foodplanner.model.model.MealsRepositoryImpl;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
-import com.youssef.foodplanner.db.localdata.MealLocalDataSourceImpl;
 
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealDetailFragment extends Fragment {
@@ -34,6 +35,8 @@ public class MealDetailFragment extends Fragment {
     private static final String ARG_MEAL_ID = "mealId";
     private String mealId;
     private MealsRepository repository;
+    private MealLocalDataSourceImpl localDataSource;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     private ImageView mealImage;
     private ImageView favButton;
@@ -43,6 +46,7 @@ public class MealDetailFragment extends Fragment {
     private TextView mealInstructions;
     private LinearLayout mealIngredients;
     private WebView mealYoutube;
+    private Meal currentMeal;
 
     public static MealDetailFragment newInstance(String mealId) {
         Bundle args = new Bundle();
@@ -59,14 +63,14 @@ public class MealDetailFragment extends Fragment {
             mealId = getArguments().getString(ARG_MEAL_ID);
         }
 
-        if (mealId == null || mealId.isEmpty()) {
-            Toast.makeText(getContext(), "Invalid meal ID", Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
-        }
+//        if (mealId == null || mealId.isEmpty()) {
+//            Toast.makeText(getContext(), "Invalid meal ID", Toast.LENGTH_SHORT).show();
+//            requireActivity().onBackPressed();
+//        }
 
-        // Initialize repository
+        // Initialize repository and local data source
         MealRemoteDataSourceImpl remoteDataSource = MealRemoteDataSourceImpl.getInstance();
-        MealLocalDataSourceImpl localDataSource = MealLocalDataSourceImpl.getInstance(requireContext());
+        localDataSource = MealLocalDataSourceImpl.getInstance(requireContext());
         repository = new MealsRepositoryImpl(remoteDataSource, localDataSource);
     }
 
@@ -75,7 +79,12 @@ public class MealDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meal_detail, container, false);
+        initializeViews(view);
+        fetchMealDetails();
+        return view;
+    }
 
+    private void initializeViews(View view) {
         mealImage = view.findViewById(R.id.meal_image);
         mealName = view.findViewById(R.id.meal_name);
         mealCategory = view.findViewById(R.id.meal_category);
@@ -85,27 +94,21 @@ public class MealDetailFragment extends Fragment {
         mealYoutube = view.findViewById(R.id.youtubeWebView);
         favButton = view.findViewById(R.id.fav_button);
 
-
-        fetchMealDetails();
-
-        return view;
+        favButton.setOnClickListener(v -> toggleFavorite());
     }
 
-
     private void fetchMealDetails() {
-        repository.getMealById(mealId)
+        disposables.add(repository.getMealById(mealId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         meal -> {
-                            if (meal != null) {
-                                displayMealDetails(meal);
-                            }
+                            currentMeal = meal;
+                            displayMealDetails(meal);
+                            checkIfFavorite(meal);
                         },
-                        throwable -> {
-                            Toast.makeText(getContext(), "Failed to fetch meal details: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                );
+                        throwable -> Toast.makeText(getContext(), "Failed to fetch meal details", Toast.LENGTH_SHORT).show()
+                ));
     }
 
     private void displayMealDetails(Meal meal) {
@@ -118,17 +121,14 @@ public class MealDetailFragment extends Fragment {
         mealArea.setText(meal.getMealArea());
         mealInstructions.setText(meal.getInstructions());
 
-        // Clear previous ingredients
+        // Display ingredients and measurements
         mealIngredients.removeAllViews();
-
-        // Get ingredients and measurements
         List<String> ingredients = meal.getIngredients();
         List<String> measurements = meal.getMeasurements();
 
-        // Display paired ingredients and measurements
         for (int i = 0; i < ingredients.size(); i++) {
             String ingredient = ingredients.get(i);
-            String measure = i < measurements.size() ? measurements.get(i) : "";
+            String measure = (i < measurements.size()) ? measurements.get(i) : "";
 
             if (!ingredient.isEmpty()) {
                 TextView tv = new TextView(getContext());
@@ -146,26 +146,63 @@ public class MealDetailFragment extends Fragment {
             if (videoId != null) {
                 String embedUrl = "https://www.youtube.com/embed/" + videoId;
                 mealYoutube.getSettings().setJavaScriptEnabled(true);
-                mealYoutube.getSettings().setDomStorageEnabled(true);
                 mealYoutube.setWebChromeClient(new WebChromeClient());
-                mealYoutube.setWebViewClient(new WebViewClient());
                 mealYoutube.loadUrl(embedUrl);
             }
         }
     }
 
-    // Function to extract YouTube Video ID
+    private void checkIfFavorite(Meal meal) {
+        disposables.add(localDataSource.getFavoriteMeals() // Changed to getFavoriteMeals()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        favoriteMeals -> {
+                            boolean isFavorite = false;
+
+                            for (Meal favMeal : favoriteMeals) {
+                                if (favMeal.getIdMeal().equals(meal.getIdMeal())) {
+                                    isFavorite = true;
+                                    break;
+                                }
+                            }
+                            favButton.setImageResource(isFavorite ?
+                                    R.drawable.ic_favourite : R.drawable.ic_favourite);
+                        },
+                        error -> Toast.makeText(getContext(), "Error checking favorites", Toast.LENGTH_SHORT).show()
+                ));
+    }
+
+    private void toggleFavorite() {
+        if (currentMeal == null) return;
+
+        disposables.add(repository.addToFavourite(currentMeal)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                            favButton.setImageResource(R.drawable.ic_favourite);
+                            Toast.makeText(getContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
+                        },
+                        error -> Toast.makeText(getContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show()
+                ));
+    }
+
     private String extractYoutubeVideoId(String url) {
         String videoId = null;
         if (url.contains("youtube.com/watch?v=")) {
             videoId = url.substring(url.indexOf("v=") + 2);
             int ampersandIndex = videoId.indexOf("&");
-            if (ampersandIndex != -1) {
-                videoId = videoId.substring(0, ampersandIndex);
-            }
+            if (ampersandIndex != -1) videoId = videoId.substring(0, ampersandIndex);
         } else if (url.contains("youtu.be/")) {
             videoId = url.substring(url.lastIndexOf("/") + 1);
         }
         return videoId;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disposables.clear();
     }
 }

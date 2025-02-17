@@ -39,6 +39,17 @@ public class MealsRepositoryImpl implements MealsRepository {
     }
 
     @Override
+    public Completable deleteFromFavorites(Meal meal) {
+       return localDataSource.deleteFromFavorites(meal);
+    }
+
+    @Override
+    public Single<List<Meal>> getFavoriteMeals() {
+        return localDataSource.getFavoriteMeals()
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
     public Single<AreaData> getMealsByArea(String area) {
         return remoteDataSource.getMealsByArea(area)
                 .subscribeOn(Schedulers.io())
@@ -144,8 +155,12 @@ public class MealsRepositoryImpl implements MealsRepository {
                 .subscribeOn(Schedulers.io());
     }
 
+
+
+
     @Override
     public Completable addToFavourite(Meal meal) {
+        meal.setFavorite(true);  // Mark as favorite
         return localDataSource.insertMealToFavorites(meal)
                 .subscribeOn(Schedulers.io());
     }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "meals")
-public class Meal implements Serializable, Parcelable {
+public class Meal implements  Parcelable {
 
     @PrimaryKey
     @NonNull

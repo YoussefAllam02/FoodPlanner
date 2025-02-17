@@ -21,27 +21,29 @@ public class FavoritePresenterImpl implements FavouritePresenter {
 
     @Override
     public void getFavorites() {
-        disposables.add(repository.getAllMeals()
+        disposables.add(repository.getFavoriteMeals()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        meals -> view.showFavoriteMeals(meals),  // ✅ Show meals in view
-                        error -> view.showErrorMessage("Error loading favorite meals") // ✅ Error handling
+                        meals -> view.showFavoriteMeals(meals),
+                        error -> view.showErrorMessage("Error loading favorite meals")
                 ));
     }
 
     @Override
     public void delete(Meal meal) {
-        disposables.add(repository.deleteAllMeals()  // If you have delete logic in repository for meals
+        disposables.add(repository.deleteFromFavorites(meal) // New method needed
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> getFavorites(),  // ✅ Refresh favorites list after deletion
-                        error -> view.showErrorMessage("Error deleting meal") // ✅ Error handling
+                        () -> getFavorites(),
+                        error -> view.showErrorMessage("Error deleting meal")
                 ));
     }
-
-    public void onDestroy() {
-        disposables.clear();  // ✅ Clear disposables when presenter is destroyed to avoid memory leaks
     }
-}
+
+
+
+
+
+

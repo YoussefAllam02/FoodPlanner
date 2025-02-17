@@ -24,7 +24,10 @@ import com.youssef.foodplanner.model.model.Meal;
 import com.youssef.foodplanner.model.model.MealsRepositoryImpl;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,6 +38,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MealDetailFragment extends Fragment {
 
     private static final String ARG_MEAL_ID = "mealId";
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private String mealId;
     private MealsRepositoryImpl repository;
     private MealLocalDataSourceImpl localDataSource;
@@ -163,7 +167,7 @@ public class MealDetailFragment extends Fragment {
                                 }
                             }
                             favButton.setImageResource(isFavorite ?
-                                    R.drawable.ic_favourite : R.drawable.ic_favourite);
+                                    R.drawable.favheart : R.drawable.ic_favourite);
                         },
                         error -> Toast.makeText(getContext(), "Error checking favorites", Toast.LENGTH_SHORT).show()
                 ));
@@ -185,29 +189,89 @@ public class MealDetailFragment extends Fragment {
     }
 
     private void showDatePickerDialog() {
-        new DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
-            String selectedDate = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, dayOfMonth);
-            saveMealToPlan(selectedDate);
-        },
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
-                .show();
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.set(selectedYear, selectedMonth, selectedDay);
+
+                    if (isPastDate(selectedDate)) {
+                        Toast.makeText(
+                                requireContext(),
+                                "Cannot add meals to past dates",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return;
+                    }
+
+                    String formattedDate = String.format(
+                            Locale.US,
+                            "%04d-%02d-%02d",
+                            selectedYear,
+                            selectedMonth + 1,
+                            selectedDay
+                    );
+                    saveMealToPlan(formattedDate);
+                },
+                year, month, day
+        );
+
+        // Prevent selecting past dates
+        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+        datePickerDialog.show();
+    }
+
+    private boolean isPastDate(Calendar selectedDate) {
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        selectedDate.set(Calendar.HOUR_OF_DAY, 0);
+        selectedDate.set(Calendar.MINUTE, 0);
+        selectedDate.set(Calendar.SECOND, 0);
+        selectedDate.set(Calendar.MILLISECOND, 0);
+
+        return selectedDate.before(today);
     }
 
     private void saveMealToPlan(String selectedDate) {
-        if (currentMeal != null) {
-            currentMeal.setDate(selectedDate);
-            disposables.add(localDataSource.insertMealToPlan(currentMeal)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> {
-                                Toast.makeText(requireContext(), "Meal added to plan", Toast.LENGTH_SHORT).show();
-                                navigateToMealPlan(selectedDate);
-                            },
-                            throwable -> Toast.makeText(requireContext(), "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show()
-                    ));
+        try {
+            Date date = dateFormatter.parse(selectedDate);
+            Calendar selectedCal = Calendar.getInstance();
+            selectedCal.setTime(date);
+
+            if (isPastDate(selectedCal)) {
+                Toast.makeText(
+                        requireContext(),
+                        "Cannot add meals to past dates",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+            if (currentMeal != null) {
+                currentMeal.setDate(selectedDate);
+                disposables.add(localDataSource.insertMealToPlan(currentMeal)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                () -> {
+                                    Toast.makeText(requireContext(), "Meal added to plan", Toast.LENGTH_SHORT).show();
+                                    navigateToMealPlan(selectedDate);
+                                },
+                                throwable -> Toast.makeText(requireContext(), "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                        ));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(requireContext(), "Invalid date format", Toast.LENGTH_SHORT).show();
         }
     }
 

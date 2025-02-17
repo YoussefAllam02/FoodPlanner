@@ -87,9 +87,8 @@
         app:layout_constraintTop_toBottomOf="@id/chipGroup"
         android:layout_marginTop="15dp"
         android:layout_marginStart="15dp"
-        app:spanCount="2"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

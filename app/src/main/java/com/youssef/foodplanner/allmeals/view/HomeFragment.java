@@ -94,25 +94,9 @@ public class HomeFragment extends Fragment implements AllMealsView {
             }
         });
 
-//                new MealAdapter() {
-//            @Override
-//            public void onMealItemClick(Meal meal) {
-//                // Navigate to MealDetailFragment with meal ID
-//                Bundle bundle = new Bundle();
-//                bundle.putString("mealId", meal.getIdMeal()); // Use the meal's ID
-//                Navigation.findNavController(requireView())
-//                        .navigate(R.id.action_home_to_detailedMeal, bundle);
-//
-//            }
-//
-//            @Override
-//            public void onFavProductClick(Meal meal) {
-//                presenter.addToFav(meal);
-//            }
-//        });
 
-
-        mealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
         mealsRecyclerView.setAdapter(mealAdapter);
 
         fetchData();
@@ -122,15 +106,14 @@ public class HomeFragment extends Fragment implements AllMealsView {
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        // Schedule the task to fetch a new random meal every 20 seconds
         runnable = new Runnable() {
             @Override
             public void run() {
                 presenter.getRandomMeal();
-                handler.postDelayed(this, 10000); // 20 seconds
+                handler.postDelayed(this, 10000);
             }
         };
-        handler.postDelayed(runnable, 10000); // Initial delay
+        handler.postDelayed(runnable, 10000);
 
         return view;
     }

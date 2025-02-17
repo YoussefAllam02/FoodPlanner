@@ -17,7 +17,7 @@ public interface MealLocalDataSource {
     // In MealLocalDataSourceImpl.java
      Single<List<Meal>> getFavoriteMeals();
     Completable insertMealToFavorites(Meal meal);
-
+    Single<List<Meal>> getMealsByDate(String date);
     Completable deleteFromFavorites(Meal meal);
 
          // Uses Room DAO

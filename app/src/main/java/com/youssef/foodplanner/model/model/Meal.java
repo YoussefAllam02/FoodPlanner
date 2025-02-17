@@ -23,6 +23,18 @@ public class Meal implements  Parcelable {
     @ColumnInfo(name = "id_meal")
     private String idMeal;
 
+
+    @ColumnInfo(name = "date")
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     @ColumnInfo(name = "meal_name")
     @SerializedName("strMeal")
     private String mealName;

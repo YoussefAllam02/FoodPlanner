@@ -28,4 +28,7 @@ public interface MealDao {
     Single<List<Meal>> getFavoriteMeals();
     @Query("DELETE FROM meals WHERE id_meal = :mealId")
     Completable deleteFromFavorites(String mealId);
+
+    @Query("SELECT * FROM meals WHERE date = :date")
+    Single<List<Meal>> getMealsByDate(String date);
 }

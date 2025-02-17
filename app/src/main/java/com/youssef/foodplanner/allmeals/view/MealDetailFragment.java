@@ -1,12 +1,12 @@
 package com.youssef.foodplanner.allmeals.view;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,16 +15,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.youssef.foodplanner.R;
 import com.youssef.foodplanner.db.localdata.MealLocalDataSourceImpl;
 import com.youssef.foodplanner.model.model.Meal;
-import com.youssef.foodplanner.model.model.MealsRepository;
 import com.youssef.foodplanner.model.model.MealsRepositoryImpl;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSourceImpl;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -34,12 +36,13 @@ public class MealDetailFragment extends Fragment {
 
     private static final String ARG_MEAL_ID = "mealId";
     private String mealId;
-    private MealsRepository repository;
+    private MealsRepositoryImpl repository;
     private MealLocalDataSourceImpl localDataSource;
     private CompositeDisposable disposables = new CompositeDisposable();
 
     private ImageView mealImage;
     private ImageView favButton;
+    private ImageView saveButton;
     private TextView mealName;
     private TextView mealCategory;
     private TextView mealArea;
@@ -49,9 +52,9 @@ public class MealDetailFragment extends Fragment {
     private Meal currentMeal;
 
     public static MealDetailFragment newInstance(String mealId) {
+        MealDetailFragment fragment = new MealDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_MEAL_ID, mealId);
-        MealDetailFragment fragment = new MealDetailFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,12 +66,6 @@ public class MealDetailFragment extends Fragment {
             mealId = getArguments().getString(ARG_MEAL_ID);
         }
 
-//        if (mealId == null || mealId.isEmpty()) {
-//            Toast.makeText(getContext(), "Invalid meal ID", Toast.LENGTH_SHORT).show();
-//            requireActivity().onBackPressed();
-//        }
-
-        // Initialize repository and local data source
         MealRemoteDataSourceImpl remoteDataSource = MealRemoteDataSourceImpl.getInstance();
         localDataSource = MealLocalDataSourceImpl.getInstance(requireContext());
         repository = new MealsRepositoryImpl(remoteDataSource, localDataSource);
@@ -93,8 +90,10 @@ public class MealDetailFragment extends Fragment {
         mealIngredients = view.findViewById(R.id.meal_ingredients);
         mealYoutube = view.findViewById(R.id.youtubeWebView);
         favButton = view.findViewById(R.id.fav_button);
+        saveButton = view.findViewById(R.id.save_button);
 
         favButton.setOnClickListener(v -> toggleFavorite());
+        saveButton.setOnClickListener(v -> showDatePickerDialog());
     }
 
     private void fetchMealDetails() {
@@ -121,7 +120,6 @@ public class MealDetailFragment extends Fragment {
         mealArea.setText(meal.getMealArea());
         mealInstructions.setText(meal.getInstructions());
 
-        // Display ingredients and measurements
         mealIngredients.removeAllViews();
         List<String> ingredients = meal.getIngredients();
         List<String> measurements = meal.getMeasurements();
@@ -139,7 +137,6 @@ public class MealDetailFragment extends Fragment {
             }
         }
 
-        // Load YouTube video
         String youtubeUrl = meal.getStrYoutube();
         if (youtubeUrl != null && !youtubeUrl.isEmpty()) {
             String videoId = extractYoutubeVideoId(youtubeUrl);
@@ -153,13 +150,12 @@ public class MealDetailFragment extends Fragment {
     }
 
     private void checkIfFavorite(Meal meal) {
-        disposables.add(localDataSource.getFavoriteMeals() // Changed to getFavoriteMeals()
+        disposables.add(localDataSource.getFavoriteMeals()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         favoriteMeals -> {
                             boolean isFavorite = false;
-
                             for (Meal favMeal : favoriteMeals) {
                                 if (favMeal.getIdMeal().equals(meal.getIdMeal())) {
                                     isFavorite = true;
@@ -186,6 +182,40 @@ public class MealDetailFragment extends Fragment {
                         },
                         error -> Toast.makeText(getContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show()
                 ));
+    }
+
+    private void showDatePickerDialog() {
+        new DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
+            String selectedDate = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, dayOfMonth);
+            saveMealToPlan(selectedDate);
+        },
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH))
+                .show();
+    }
+
+    private void saveMealToPlan(String selectedDate) {
+        if (currentMeal != null) {
+            currentMeal.setDate(selectedDate);
+            disposables.add(localDataSource.insertMealToPlan(currentMeal)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            () -> {
+                                Toast.makeText(requireContext(), "Meal added to plan", Toast.LENGTH_SHORT).show();
+                                navigateToMealPlan(selectedDate);
+                            },
+                            throwable -> Toast.makeText(requireContext(), "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                    ));
+        }
+    }
+
+    private void navigateToMealPlan(String selectedDate) {
+        Bundle args = new Bundle();
+        args.putString("selectedDate", selectedDate);
+        Navigation.findNavController(requireView())
+                .navigate(R.id.action_mealDetailFragment_to_mealPlanFragment, args);
     }
 
     private String extractYoutubeVideoId(String url) {

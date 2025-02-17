@@ -1,6 +1,7 @@
 package com.youssef.foodplanner.db.localdata;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.youssef.foodplanner.db.remotedata.AppDataBase;
 import com.youssef.foodplanner.model.model.Meal;
@@ -44,7 +45,9 @@ public class MealLocalDataSourceImpl implements MealLocalDataSource {
 
     @Override
     public Completable insertMealToPlan(Meal meal) {
-        return null;
+        return mealDao.insert(meal)
+                .doOnComplete(() -> Log.d("DB", "Meal inserted: " + meal.getIdMeal()))
+                .doOnError(e -> Log.e("DB", "Insert error: ", e));
     }
 
     @Override
@@ -60,6 +63,12 @@ public class MealLocalDataSourceImpl implements MealLocalDataSource {
     @Override
     public Completable deleteFromFavorites(Meal meal) {
         return mealDao.deleteFromFavorites(meal.getIdMeal());
+    }
+    public Single<List<Meal>> getMealsByDate(String date) {
+        Log.d("DB_QUERY", "Querying meals for date: " + date);
+        return mealDao.getMealsByDate(date)
+                .doOnSuccess(meals -> Log.d("DB_QUERY", "Found " + meals.size() + " meals"))
+                .doOnError(e -> Log.e("DB_QUERY", "Error: ", e));
     }
 
 

@@ -45,7 +45,7 @@
             app:destination="@id/detailedMealFragment" />
         <argument
             android:name="mealId"
-            app:argType="com.youssef.foodplanner.model.model.Meal" />
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -65,22 +65,27 @@
         tools:layout="@layout/fragment_meal_detail">
         <argument
             android:name="mealId"
-        app:argType="string" />
+            app:argType="string" />
+        <action
+            android:id="@+id/action_mealDetailFragment_to_mealPlanFragment"
+            app:destination="@id/mealPlanFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.youssef.foodplanner.SearchMeal.View.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_mealListFragment"
             app:destination="@id/mealListFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/mealListFragment"
         android:name="com.youssef.foodplanner.MealList.View.MealListFragment"
         android:label="fragment_meal_list"
-        tools:layout="@layout/fragment_meal_list" >
+        tools:layout="@layout/fragment_meal_list">
         <argument
             android:name="name"
             app:argType="string" />
@@ -91,9 +96,15 @@
             android:id="@+id/action_mealListFragment_to_detailedMealFragment"
             app:destination="@id/detailedMealFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/mealPlanFragment"
         android:name="com.youssef.foodplanner.MealPlan.view.MealPlanFragment"
-        android:label="fragment_meal_plan"
-        tools:layout="@layout/fragment_meal_plan" />
+        android:label="Meal Plan">
+        <argument
+            android:name="selectedDate"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
 </navigation>

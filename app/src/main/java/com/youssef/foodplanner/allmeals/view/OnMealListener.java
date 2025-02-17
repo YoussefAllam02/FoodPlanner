@@ -5,4 +5,5 @@ import com.youssef.foodplanner.model.model.Meal;
 public interface OnMealListener {
     void onFavProductClick(Meal meal);
     void onMealItemClick(Meal meal);
+    //void onSaveclick(Meal meal);
 }

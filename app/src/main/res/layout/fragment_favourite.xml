@@ -8,6 +8,7 @@
     tools:context=".FavMealPage.view.favouriteFragment">
 
     <TextView
+        android:layout_marginTop="20dp"
         android:id="@+id/tv_fav_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

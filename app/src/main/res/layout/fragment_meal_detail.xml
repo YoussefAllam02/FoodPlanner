@@ -41,32 +41,46 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal">
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-
+                    <!-- Favorite Button -->
                     <ImageView
                         android:id="@+id/fav_button"
                         android:layout_width="36dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
                         android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_favourite" />
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_favourite"
+                        android:contentDescription="Favorite Meal"/>
 
                     <!-- Meal Name -->
                     <TextView
                         android:id="@+id/meal_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"/>
+
+                    <!-- Save to Plan Button -->
+                    <ImageView
+                        android:id="@+id/save_button"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:padding="6dp"
+
+                        android:src="@drawable/save_alt"
+                        android:contentDescription="Save to Meal Plan"/>
                 </LinearLayout>
 
-
+                <!-- Category and Area -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -81,14 +95,13 @@
                         android:textSize="18sp"
                         android:textColor="@color/g_black"
                         android:gravity="center"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="12dp"
                         android:padding="5dp"/>
 
                     <TextView
                         android:id="@+id/meal_area"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
                         android:textSize="18sp"
                         android:textColor="@color/g_black"
                         android:gravity="center"/>

@@ -92,6 +92,7 @@ public  class MealAdapter extends RecyclerView.Adapter<com.youssef.foodplanner.a
 
         ImageView mealImage;
         ImageView favButton;
+        ImageView savebutton;
 
         public MealViewHolder(@NonNull View itemView, OnMealListener listener) {
             super(itemView);
@@ -100,6 +101,7 @@ public  class MealAdapter extends RecyclerView.Adapter<com.youssef.foodplanner.a
             MealArea = itemView.findViewById(R.id.meal_area);
             mealName = itemView.findViewById(R.id.meal_name);
             favButton=itemView.findViewById(R.id.fav_button);
+            savebutton=itemView.findViewById(R.id.save_button);
 
 
 

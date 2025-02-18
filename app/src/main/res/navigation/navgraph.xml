@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
     <!-- Auth Flow -->
@@ -71,6 +73,7 @@
             app:destination="@id/mealPlanFragment" />
     </fragment>
 
+    <!-- Search Flow -->
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.youssef.foodplanner.SearchMeal.View.SearchFragment"
@@ -97,6 +100,7 @@
             app:destination="@id/detailedMealFragment" />
     </fragment>
 
+    <!-- Meal Plan -->
     <fragment
         android:id="@+id/mealPlanFragment"
         android:name="com.youssef.foodplanner.MealPlan.view.MealPlanFragment"
@@ -105,6 +109,17 @@
             android:name="selectedDate"
             app:argType="string"
             android:defaultValue="" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/logoutFragment"
+        android:name="com.youssef.foodplanner.Auth.View.logoutFragment"
+        android:label="fragment_logout"
+        tools:layout="@layout/fragment_logout">
+        <action
+            android:id="@+id/action_logout_to_login"
+            app:destination="@id/loginFragment" />
     </fragment>
 
 </navigation>

@@ -1,5 +1,4 @@
 package com.youssef.foodplanner.Auth.View;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,13 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.youssef.foodplanner.R;
 
 public class Login extends Fragment {
@@ -33,7 +31,7 @@ public class Login extends Fragment {
   private EditText email, password;
   private Button signinButton;
   private TextView signupText;
-  private SignInButton googleSignInButton; // Use SignInButton instead of Button
+  private SignInButton googleSignInButton;
   private FirebaseAuth auth;
   private GoogleSignInClient googleSignInClient;
   private static final int RC_SIGN_IN = 123;
@@ -43,7 +41,6 @@ public class Login extends Fragment {
     super.onCreate(savedInstanceState);
     auth = FirebaseAuth.getInstance();
 
-    // Configure Google Sign-In
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -56,6 +53,8 @@ public class Login extends Fragment {
                            Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_login, container, false);
   }
+
+
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -73,8 +72,9 @@ public class Login extends Fragment {
       navController.navigate(R.id.action_login_to_signup);
     });
 
-    // Google Sign-In Button Click Listener
     googleSignInButton.setOnClickListener(v -> signInWithGoogle());
+
+    checkIfUserIsLoggedIn();
   }
 
   private void loginUser() {
@@ -89,8 +89,7 @@ public class Login extends Fragment {
     auth.signInWithEmailAndPassword(userEmail, userPassword)
             .addOnSuccessListener(authResult -> {
               Toast.makeText(getContext(), "Login successful", Toast.LENGTH_SHORT).show();
-              NavController navController = Navigation.findNavController(getView());
-              navController.navigate(R.id.action_login_to_home);
+              navigateToHome();
             })
             .addOnFailureListener(e -> {
               Toast.makeText(getContext(), "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -128,11 +127,22 @@ public class Login extends Fragment {
     auth.signInWithCredential(credential)
             .addOnSuccessListener(authResult -> {
               Toast.makeText(getContext(), "Google sign-in successful", Toast.LENGTH_SHORT).show();
-              NavController navController = Navigation.findNavController(getView());
-              navController.navigate(R.id.action_login_to_home);
+              navigateToHome();
             })
             .addOnFailureListener(e -> {
               Toast.makeText(getContext(), "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
+  }
+
+  private void checkIfUserIsLoggedIn() {
+    FirebaseUser user = auth.getCurrentUser();
+    if (user != null) {
+      navigateToHome();
+    }
+  }
+
+  private void navigateToHome() {
+    NavController navController = Navigation.findNavController(getView());
+    navController.navigate(R.id.action_login_to_home);
   }
 }

@@ -84,5 +84,7 @@ dependencies {
     // Retrofit Adapter for RxJava3 (Corrected)
     implementation 'com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0'
     implementation("androidx.cardview:cardview:1.0.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation("com.google.firebase:firebase-database")
 
 }

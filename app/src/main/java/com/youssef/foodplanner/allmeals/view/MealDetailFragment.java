@@ -181,7 +181,7 @@ public class MealDetailFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
-                            favButton.setImageResource(R.drawable.ic_favourite);
+                            favButton.setImageResource(R.drawable.favheart);
                             Toast.makeText(getContext(), "Added to favorites", Toast.LENGTH_SHORT).show();
                         },
                         error -> Toast.makeText(getContext(), "Failed to add to favorites", Toast.LENGTH_SHORT).show()
@@ -232,7 +232,6 @@ public class MealDetailFragment extends Fragment {
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
         today.set(Calendar.MILLISECOND, 0);
-
         selectedDate.set(Calendar.HOUR_OF_DAY, 0);
         selectedDate.set(Calendar.MINUTE, 0);
         selectedDate.set(Calendar.SECOND, 0);

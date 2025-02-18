@@ -1,5 +1,5 @@
 package com.youssef.foodplanner.allmeals.view;
-
+////qqqqqqqqqqqqq
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -16,6 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.youssef.foodplanner.R;
 import com.youssef.foodplanner.allmeals.presenter.AllMealsPresenterImpl;
 import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
@@ -31,6 +38,8 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements AllMealsView {
     private Meal currentRandomMeal;
+    private DatabaseReference favoritesRef;
+
     private AllMealsPresenterImpl presenter;
     private MealAdapter mealAdapter;
     private RecyclerView mealsRecyclerView;
@@ -42,13 +51,17 @@ public class HomeFragment extends Fragment implements AllMealsView {
     private SwipeRefreshLayout swipeRefreshLayout;
     private Handler handler = new Handler();
     private Runnable runnable;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+//    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//    FirebaseUser currentUser = mAuth.getCurrentUser();
+
 
     @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        // Initialize views
         View randomMealContainer = view.findViewById(R.id.random_meal_container);
+
         randomMealImage = view.findViewById(R.id.random_meal_image);
         randomMealName = view.findViewById(R.id.random_meal_name);
         randomMealCategory = view.findViewById(R.id.random_meal_category);
@@ -57,16 +70,13 @@ public class HomeFragment extends Fragment implements AllMealsView {
         randomMealName = view.findViewById(R.id.random_meal_name);
         mealsRecyclerView = view.findViewById(R.id.meals_recycler_view);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-
         MealLocalDataSource localDataSource = new MealLocalDataSourceImpl(requireContext());
         MealRemoteDataSource remoteDataSource = MealRemoteDataSourceImpl.getInstance();
         repository = new MealsRepositoryImpl(remoteDataSource, localDataSource);
         presenter = new AllMealsPresenterImpl(this, repository);
-
-
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            onRefresh(); // Call onRefresh to clear cache and fetch new data
-            swipeRefreshLayout.setRefreshing(false); // Stop the refreshing animation
+            onRefresh();
+            swipeRefreshLayout.setRefreshing(false);
         });
         randomMealContainer.setOnClickListener(v -> {
             if (currentRandomMeal != null) {
@@ -84,13 +94,13 @@ public class HomeFragment extends Fragment implements AllMealsView {
                 bundle.putString("mealId", meal.getIdMeal());
                 Navigation.findNavController(requireView())
                         .navigate(R.id.action_home_to_detailedMeal, bundle);
-
+                 sendData(meal);
             }
 
             @Override
             public void onFavProductClick(Meal meal) {
                 presenter.addToFav(meal);
-
+               sendData(meal);
             }
         });
 
@@ -100,6 +110,7 @@ public class HomeFragment extends Fragment implements AllMealsView {
         mealsRecyclerView.setAdapter(mealAdapter);
 
         fetchData();
+
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             fetchData();
@@ -118,6 +129,30 @@ public class HomeFragment extends Fragment implements AllMealsView {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //database = FirebaseDatabase.getInstance();
+        myRef=FirebaseDatabase.getInstance().getReference("meal");
+
+        //currentUser = mAuth.getCurrentUser();
+
+    }
+
+
+    private void sendData(Meal meal) {
+
+        myRef.child(meal.getIdMeal()).setValue(meal).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(getContext(), "Meal added to favorites", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+
     private void fetchData() {
         presenter.getMeals();
         presenter.getRandomMeal();
@@ -131,15 +166,15 @@ public class HomeFragment extends Fragment implements AllMealsView {
     @Override
     public void showAllProducts(List<Meal> meals) {
         mealAdapter.setMeals(meals);
+
     }
 
     @Override
     public void displayMeals(List<Meal> meals) {
         if (meals != null && !meals.isEmpty()) {
-            Log.d("HomeFragment", "Updating UI with meals: " + meals.size());
-            mealAdapter.setMeals(meals); // Update the adapter
+            mealAdapter.setMeals(meals);
         } else {
-            Log.d("HomeFragment", "No meals found");
+
             showErrorMessage("No meals found");
         }
     }
@@ -155,6 +190,7 @@ public class HomeFragment extends Fragment implements AllMealsView {
         randomMealName.setText(meal.getMealName());
 
         randomMealCategory.setText(meal.getCategory());
+         sendData(meal);
     }
 
     @Override

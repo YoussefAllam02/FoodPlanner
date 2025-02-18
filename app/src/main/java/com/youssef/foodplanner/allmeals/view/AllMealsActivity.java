@@ -9,8 +9,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.youssef.foodplanner.R;
 import com.youssef.foodplanner.allmeals.presenter.AllMealsPresenter;
 import com.youssef.foodplanner.allmeals.presenter.AllMealsPresenterImpl;
@@ -27,6 +29,8 @@ import java.util.List;
 
 public class AllMealsActivity extends AppCompatActivity implements AllMealsView, OnMealListener {
     private AllMealsPresenter presenter;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
     private String[] trendingIngredients = {"seafood", "beef", "chicken"};
     private ImageView randomMealImage;
     private RecyclerView ingredientMealsRecyclerView;
@@ -42,32 +46,19 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
         if (savedInstanceState == null) {
             loadHomeFragment();
         }
-
-        // Initialize data sources and repository
         MealRemoteDataSource remoteDataSource = MealRemoteDataSourceImpl.getInstance();
         MealLocalDataSource localDataSource = MealLocalDataSourceImpl.getInstance(this);
         repository = new MealsRepositoryImpl(remoteDataSource, localDataSource);
-
-        // Initialize the presenter
         presenter = new AllMealsPresenterImpl(this, repository);
-
-        // Initialize the ImageView for the random meal
         randomMealImage = findViewById(R.id.randomMealImage);
-
-        // Initialize RecyclerView for meals by ingredient
         ingredientMealsRecyclerView = findViewById(R.id.ingredientMealsRecyclerView);
         ingredientMealsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        // Initialize the list and adapter
         ingredientMealsList = new ArrayList<>();
         ingredientMealsAdapter = new AllMealsAdapter(this, ingredientMealsList, this);
         ingredientMealsRecyclerView.setAdapter(ingredientMealsAdapter);
-
-        // Fetch random meal
         presenter.getRandomMeal();
-
-        // Fetch meals by ingredient (e.g., "chicken")
         presenter.getMealsByIngredient("chicken");
+       // myRef=FirebaseDatabase.getInstance().getReference("meal");
     }
 
     private void loadHomeFragment() {
@@ -79,29 +70,25 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
 
     @Override
     public void showAllProducts(List<Meal> meals) {
-        // This method is not needed in this activity since we are using displayMeals()
+        //now in frasment
     }
 
     @Override
     public void showRandomMeal(Meal meal) {
-        // Load the random meal image into the ImageView using Glide
         Glide.with(this)
-                .load(meal.getMealImage()) // Assuming getMealImage() returns the image URL
+                .load(meal.getMealImage())
                 .into(randomMealImage);
 
-        // Set a click listener for the random meal image
         randomMealImage.setOnClickListener(v -> {
-            // Handle click event (e.g., navigate to detailed meal view)
             Toast.makeText(this, "Random meal clicked: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
         });
     }
 
     @Override
     public void displayMeals(List<Meal> meals) {
-        // Update meals by ingredient list (limit to 10)
         ingredientMealsList.clear();
-        ingredientMealsList.addAll(meals.subList(0, Math.min(meals.size(), 10))); // Limit to 10 meals
-        ingredientMealsAdapter.notifyDataSetChanged(); // Notify adapter of data changes
+        ingredientMealsList.addAll(meals.subList(0, Math.min(meals.size(), 10)));
+        ingredientMealsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -112,26 +99,23 @@ public class AllMealsActivity extends AppCompatActivity implements AllMealsView,
 
     @Override
     public void showSuccessMessage(String message) {
-        // Handle success message if needed
     }
 
     @Override
     public void onFavProductClick(Meal meal) {
         // Handle favorite product click
         Toast.makeText(this, "Added to favorites: " + meal.getMealName(), Toast.LENGTH_SHORT).show();
+        presenter.addToFav(meal);
 
-        // Delegate the action to the presenter
-        presenter.addToFav(meal); // Add to favorites
     }
 
     @Override
     public void onMealItemClick(Meal meal) {
-        // Handle meal item click (e.g., navigate to detailed meal view)
+
     }
     @Override
     public void onRefresh() {
-        // Handle refresh logic if needed
-        // For example, if this activity has a SwipeRefreshLayout, you can call:
+
          repository.clearCache();
          fetchData();
     }

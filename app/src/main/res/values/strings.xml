@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name"> yumyum</string>
     <color name="link_color">#007BFF</color> <!-- يمكنك تغيير اللون إلى أي قيمة أخرى -->
-
+    <string name="default_web_client_id">1:629983990284:android:1cc78ea85558515db75429</string>
     <string name="random_meal_image">Random Meal Image</string>
     <string name="random_meal_name">Random Meal Name</string>
     <string name="meals_by_ingredient">Meals by Ingredient</string>

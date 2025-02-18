@@ -13,4 +13,8 @@
     <color name="g_black">#33405f</color>
     <color name="g_loading">#fffafc</color>
     <color name="lightPink">#EA4A99</color>
+    <color name="grey_600">#757575</color>
+    <color name="black_50">#FAFAFA</color>
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_400">#BDBDBD</color>
 </resources>

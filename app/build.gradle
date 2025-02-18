@@ -65,7 +65,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
-
+    implementation 'com.airbnb.android:lottie:6.4.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    implementation platform('com.google.firebase:firebase-bom:32.5.0')
     // RxJava 3
     implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'

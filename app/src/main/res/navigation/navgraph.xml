@@ -1,11 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/navgraph"
-    app:startDestination="@id/splashScreen">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <!-- Auth Flow -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.youssef.foodplanner.Auth.View.Login"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_to_signup"
+            app:destination="@id/signupFragment" />
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
-        android:id="@+id/splashScreen"
-        android:name="com.youssef.foodplanner.SplashScreen"
-        android:label="SplashScreen" />
+        android:id="@+id/signupFragment"
+        android:name="com.youssef.foodplanner.Auth.View.Signup"
+        android:label="Signup"
+        tools:layout="@layout/fragment_signup">
+        <action
+            android:id="@+id/action_signup_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/signupFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Main Flow -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.youssef.foodplanner.allmeals.view.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_favourite"
+            app:destination="@id/favouriteFragment" />
+        <action
+            android:id="@+id/action_home_to_detailedMeal"
+            app:destination="@id/detailedMealFragment" />
+        <argument
+            android:name="mealId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="com.youssef.foodplanner.FavMealPage.view.favouriteFragment"
+        android:label="Favourite"
+        tools:layout="@layout/fragment_favourite">
+        <action
+            android:id="@+id/action_favourite_to_detailedMeal"
+            app:destination="@id/detailedMealFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailedMealFragment"
+        android:name="com.youssef.foodplanner.allmeals.view.MealDetailFragment"
+        android:label="Detailed Meal"
+        tools:layout="@layout/fragment_meal_detail">
+        <argument
+            android:name="mealId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_mealDetailFragment_to_mealPlanFragment"
+            app:destination="@id/mealPlanFragment" />
+    </fragment>
+
+    <!-- Search Flow -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.youssef.foodplanner.SearchMeal.View.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_mealListFragment"
+            app:destination="@id/mealListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mealListFragment"
+        android:name="com.youssef.foodplanner.MealList.View.MealListFragment"
+        android:label="fragment_meal_list"
+        tools:layout="@layout/fragment_meal_list">
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_mealListFragment_to_detailedMealFragment"
+            app:destination="@id/detailedMealFragment" />
+    </fragment>
+
+    <!-- Meal Plan -->
+    <fragment
+        android:id="@+id/mealPlanFragment"
+        android:name="com.youssef.foodplanner.MealPlan.view.MealPlanFragment"
+        android:label="Meal Plan">
+        <action
+            android:id="@+id/action_mealPlanFragment_to_detailedMealFragment"
+            app:destination="@id/detailedMealFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/logoutFragment"
+        android:name="com.youssef.foodplanner.Auth.View.logoutFragment"
+        android:label="fragment_logout"
+        tools:layout="@layout/fragment_logout">
+        <action
+            android:id="@+id/action_logout_to_login"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@android:anim/fade_in" />
+    </fragment>
+
 </navigation>

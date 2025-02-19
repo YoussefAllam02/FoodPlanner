@@ -63,6 +63,7 @@ public class favouriteFragment extends Fragment implements FavoriteMealsView, Fa
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         navController = Navigation.findNavController(view);
     }
 
@@ -88,6 +89,10 @@ public class favouriteFragment extends Fragment implements FavoriteMealsView, Fa
     public void showErrorMessage(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+
+
+
 
 
     @Override

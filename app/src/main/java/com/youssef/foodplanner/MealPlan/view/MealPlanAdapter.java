@@ -18,11 +18,12 @@ import java.util.List;
 public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPlanViewHolder> {
 
     private List<Meal> meals;
-    private OnMealPlanClickListener listener;
+    //private OnMealPlanClickListener listener;
+    OnMealClickListener listen;
 
-    public MealPlanAdapter(List<Meal> meals, OnMealPlanClickListener listener) {
+    public MealPlanAdapter(List<Meal> meals, OnMealClickListener listen) {
         this.meals = meals != null ? meals : new ArrayList<>();
-        this.listener = listener;
+        this.listen = listen;
     }
 
     @NonNull
@@ -47,9 +48,14 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
                 .into(holder.mealImage);
 
         // Handle meal click
+//        holder.itemView.setOnClickListener(v -> {
+//            if (listener != null) {
+//                listener.onMealPlanClick(meal);
+//            }
+//        });
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onMealPlanClick(meal);
+            if (listen != null) {
+                listen.onMealClick(meal);
             }
         });
     }
@@ -69,6 +75,9 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
         }
         notifyDataSetChanged();
     }
+
+
+
     static class MealPlanViewHolder extends RecyclerView.ViewHolder {
         ImageView mealImage;
         TextView mealName, mealCategory, mealArea;
@@ -80,5 +89,9 @@ public class MealPlanAdapter extends RecyclerView.Adapter<MealPlanAdapter.MealPl
             mealCategory = itemView.findViewById(R.id.meal_category);
             mealArea = itemView.findViewById(R.id.meal_area);
         }
+    }
+
+    public interface OnMealClickListener {
+        void onMealClick(Meal meal);
     }
 }

@@ -1,9 +1,15 @@
 package com.youssef.foodplanner.FavMealPage.presenter;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.youssef.foodplanner.FavMealPage.view.FavoriteMealsView;
 import com.youssef.foodplanner.model.model.Meal;
 import com.youssef.foodplanner.model.model.MealsRepository;
 import com.youssef.foodplanner.FavMealPage.presenter.FavouritePresenter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -29,6 +35,13 @@ public class FavoritePresenterImpl implements FavouritePresenter {
                         error -> view.showErrorMessage("Error loading favorite meals")
                 ));
     }
+
+
+
+
+
+
+
 
     @Override
     public void delete(Meal meal) {

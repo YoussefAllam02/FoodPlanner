@@ -1,9 +1,13 @@
 package com.youssef.foodplanner.model.model;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import java.util.List;
+import java.util.Map;
 
 public interface MealsRepository {
 
@@ -13,15 +17,7 @@ public interface MealsRepository {
     Single<AreaData>getMealsByCategory(String category);
     Single<AreaData>getMealsByIngredients(String ingredient);
 
-
-
-
-
-
-
-
-
-
+///////////////
     Observable<List<Meal>> getAllMeals();
     Single<Meal> getMealById(String mealId);
     Observable<List<Meal>> getMealsByIngredient(String ingredient);

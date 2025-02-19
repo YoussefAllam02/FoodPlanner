@@ -21,18 +21,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.youssef.foodplanner.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Signup extends Fragment {
 
+   FirebaseFirestore db = FirebaseFirestore.getInstance();
     private EditText email, name, password, confirmPassword;
     private Button signupButton;
     private SignInButton googleSignUpButton;
-    private FirebaseAuth auth;
+    private FirebaseAuth auth=FirebaseAuth.getInstance();
     private GoogleSignInClient googleSignInClient;
     private static final int RC_SIGN_IN = 123;
 
@@ -41,7 +48,6 @@ public class Signup extends Fragment {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
 
-        // Configure Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -88,6 +94,8 @@ public class Signup extends Fragment {
 
         auth.createUserWithEmailAndPassword(userEmail, userPassword)
                 .addOnSuccessListener(authResult -> {
+                    FirebaseUser user = auth.getCurrentUser();
+                    saveUserToFirestore(user.getUid(), String.valueOf(email));
                     Toast.makeText(getContext(), "Signup successful", Toast.LENGTH_SHORT).show();
                     NavController navController = Navigation.findNavController(getView());
                     navController.navigate(R.id.action_signup_to_home);
@@ -127,6 +135,8 @@ public class Signup extends Fragment {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential)
                 .addOnSuccessListener(authResult -> {
+                    FirebaseUser user = auth.getCurrentUser();
+                    saveUserToFirestore(user.getUid(), String.valueOf(email));
                     Toast.makeText(getContext(), "Google sign-in successful", Toast.LENGTH_SHORT).show();
                     NavController navController = Navigation.findNavController(getView());
                     navController.navigate(R.id.action_signup_to_home);
@@ -134,5 +144,24 @@ public class Signup extends Fragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+
+
+    private void saveUserToFirestore(String userId, String email) {
+        Map<String, Object> user = new HashMap<>();
+        user.put("favorites", new HashMap<>()); // Initialize empty favorites
+        user.put("mealPlans", new HashMap<>()); // Initialize empty meal plans
+
+        db.collection("users").document(userId)
+                .set(user)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                        }
+                    }
+                });
+
+
     }
 }

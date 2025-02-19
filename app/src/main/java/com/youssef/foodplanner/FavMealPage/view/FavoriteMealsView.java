@@ -7,4 +7,7 @@ import java.util.List;
 public interface FavoriteMealsView {
     void showFavoriteMeals(List<Meal> meals);
     void showErrorMessage(String message);
+
+
+
 }

@@ -1,6 +1,10 @@
 package com.youssef.foodplanner.model.model;
 
 import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
 import com.youssef.foodplanner.db.remotedata.MealRemoteDataSource;
 import java.util.ArrayList;
@@ -16,6 +20,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MealsRepositoryImpl implements MealsRepository {
     private final MealRemoteDataSource remoteDataSource;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final MealLocalDataSource localDataSource;
     private static MealsRepositoryImpl repo = null;
 
@@ -67,6 +72,9 @@ public class MealsRepositoryImpl implements MealsRepository {
         return remoteDataSource.getMealsByIngredients(ingredient).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+
+
 
     @Override
     public Observable<List<Meal>> getAllMeals() {
@@ -160,7 +168,7 @@ public class MealsRepositoryImpl implements MealsRepository {
 
     @Override
     public Completable addToFavourite(Meal meal) {
-        meal.setFavorite(true);  // Mark as favorite
+        meal.setFavorite(true);
         return localDataSource.insertMealToFavorites(meal)
                 .subscribeOn(Schedulers.io());
     }

@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,7 +36,7 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class MealPlanFragment extends Fragment implements MealPlanView {
+    public class MealPlanFragment extends Fragment implements MealPlanView , MealPlanAdapter.OnMealClickListener {
 
     private RecyclerView mealsRecyclerView;
     private CalendarView calendarView;
@@ -42,6 +44,7 @@ public class MealPlanFragment extends Fragment implements MealPlanView {
     private MealPlanPresenter presenter;
     private String selectedDate;
     private CompositeDisposable disposables;
+    private NavController navController;
     private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     @Override
@@ -63,6 +66,7 @@ public class MealPlanFragment extends Fragment implements MealPlanView {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         disposables = new CompositeDisposable();
+        navController = Navigation.findNavController(view);
         presenter = new MealPlanPresenterImpl(
                 this,
                 MealLocalDataSourceImpl.getInstance(requireContext())
@@ -83,7 +87,7 @@ public class MealPlanFragment extends Fragment implements MealPlanView {
     }
 
     private void setupRecyclerView() {
-        adapter = new MealPlanAdapter(new ArrayList<>(), null);
+        adapter = new MealPlanAdapter(new ArrayList<>(), this);
         mealsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mealsRecyclerView.setAdapter(adapter);
     }
@@ -152,6 +156,7 @@ public class MealPlanFragment extends Fragment implements MealPlanView {
         }
     }
 
+
     @Override
     public void showMeals(List<Meal> meals) {
         adapter.updateMeals(meals);
@@ -177,4 +182,12 @@ public class MealPlanFragment extends Fragment implements MealPlanView {
             disposables = null;
         }
     }
-}
+
+        @Override
+        public void onMealClick(Meal meal) {
+            Log.d("MealClick", "Meal clicked: " + meal.getMealName());
+            Bundle bundle = new Bundle();
+            bundle.putString("mealId", meal.getIdMeal()+"");
+            navController.navigate(R.id.action_mealPlanFragment_to_detailedMealFragment, bundle);
+        }
+    }

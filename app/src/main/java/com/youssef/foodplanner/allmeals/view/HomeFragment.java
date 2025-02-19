@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.youssef.foodplanner.FavMealPage.presenter.FavouritePresenter;
 import com.youssef.foodplanner.R;
 import com.youssef.foodplanner.allmeals.presenter.AllMealsPresenterImpl;
 import com.youssef.foodplanner.db.localdata.MealLocalDataSource;
@@ -39,7 +40,7 @@ import java.util.List;
 public class HomeFragment extends Fragment implements AllMealsView {
     private Meal currentRandomMeal;
     private DatabaseReference favoritesRef;
-
+    private FavouritePresenter favouritePresenter;
     private AllMealsPresenterImpl presenter;
     private MealAdapter mealAdapter;
     private RecyclerView mealsRecyclerView;
@@ -94,13 +95,14 @@ public class HomeFragment extends Fragment implements AllMealsView {
                 bundle.putString("mealId", meal.getIdMeal());
                 Navigation.findNavController(requireView())
                         .navigate(R.id.action_home_to_detailedMeal, bundle);
-                 sendData(meal);
+                 //sendData(meal);
             }
 
             @Override
             public void onFavProductClick(Meal meal) {
                 presenter.addToFav(meal);
-               sendData(meal);
+
+               //sendData(meal);
             }
         });
 
